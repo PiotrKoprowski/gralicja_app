@@ -1,18 +1,32 @@
 package pl.coderslab.gralicjaApp.model;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+import pl.coderslab.gralicjaApp.validator.PasswordMatches;
+
+@PasswordMatches
 public class UserDTO {
-	private String email;
-	private String password;
+    @NotNull
+    @NotEmpty
+    private String username;
 	
-	public UserDTO() {
+    @NotNull
+    @NotEmpty
+    private String password;
+    private String matchingPassword;
+     
+    @NotNull
+    @NotEmpty
+    private String email;
+
+	public String getUsername() {
+		return username;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -21,5 +35,21 @@ public class UserDTO {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getMatchingPassword() {
+		return matchingPassword;
+	}
+
+	public void setMatchingPassword(String matchingPassword) {
+		this.matchingPassword = matchingPassword;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

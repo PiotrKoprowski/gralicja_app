@@ -52,7 +52,7 @@ public class GameTableController {
 			return "gameTableForm";
 		}
 		User u = (User)session.getAttribute("loggedInUser");
-		List<User> uList = new ArrayList<User>();
+		List<User> uList = new ArrayList<>();
 		uList.add(u);
 		gameTable.setUser(uList);
 		gameTable.setActualNumOfPlayers(1);
@@ -67,7 +67,7 @@ public class GameTableController {
 	
 	@ModelAttribute("days")
 	public List<String> getDays(){
-		List<String> days = new ArrayList<String>();
+		List<String> days = new ArrayList<>();
 		days.add("Sobota");
 		days.add("Niedziela");
 		return days;
@@ -75,7 +75,7 @@ public class GameTableController {
 	
 	@ModelAttribute("hours")
 	public List<String> getHours(){
-		List<String> hours = new ArrayList<String>();
+		List<String> hours = new ArrayList<>();
 		hours.add("9:00");
 		hours.add("9:15");
 		hours.add("9:30");

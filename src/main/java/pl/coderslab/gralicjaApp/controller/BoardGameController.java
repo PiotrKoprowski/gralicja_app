@@ -41,7 +41,7 @@ public class BoardGameController {
 	
 	@ModelAttribute("categories")
 	public List<String> getCategories(){
-		List<String> categories = new ArrayList<String>();
+		List<String> categories = new ArrayList<>();
 		categories.add("Edukacyjne");
 		categories.add("Karty i gry karciane");
 		categories.add("Logiczne");
@@ -58,7 +58,7 @@ public class BoardGameController {
 
 	@ModelAttribute("publishers")
 	public List<String> getPublishers(){
-		List<String> publishers = new ArrayList<String>();
+		List<String> publishers = new ArrayList<>();
 		publishers.add("alexander");
 		publishers.add("trefl");
 		publishers.add("rebel");

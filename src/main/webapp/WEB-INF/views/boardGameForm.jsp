@@ -9,64 +9,69 @@
 
 <%@ include file="jspf/head_config.jspf"%>
 
-<title>Gralicja App</title>
 </head>
 <body>
 	<%@ include file="jspf/header.jspf"%>
 	<%@ include file="jspf/main_menu.jspf"%>
 
-	<form:form modelAttribute="boardGame" method="post">
-		<div>
-			<form:label path="title">Tytuł</form:label>
-			<form:input type="text" path="title" placeholder="Tytuł" />
-			<form:errors path="title"></form:errors>
-		</div>
-		<div>
-			<form:label path="description">Opis</form:label>
-			<form:textarea path="description" placeholder="Opis" />
-			<form:errors path="description"></form:errors>
-		</div>
-		<div>
-			<form:label path="category">Kategoria</form:label>
-			<form:select path="category">
-				<form:option value="">Wybierz kategorie</form:option>
-				<form:options items="${categories}"></form:options>
-			</form:select>
-			<form:errors path="category"></form:errors>
-		</div>
-		<div>
-			<form:label path="publisher">Wydawca</form:label>
-			<form:select path="publisher">
-				<form:option value="">Wybierz wydawcę</form:option>
-				<form:options items="${publishers}"></form:options>
-			</form:select>
-			<form:errors path="publisher"></form:errors>
-		</div>
-		<div>
-			<form:label path="minNumOfPlayers">Minimalna liczba graczy</form:label>
-			<form:input path="minNumOfPlayers" type="number" placeholder="Minimum 2 graczy" />
-			<form:errors path="minNumOfPlayers"></form:errors>
-		</div>
-		<div>
-			<form:label path="maxNumOfPlayers">Maksymalna liczba graczy</form:label>
-			<form:input path="maxNumOfPlayers" type="number" placeholder="Maksiumum 30 graczy" />
-			<form:errors path="maxNumOfPlayers"></form:errors>
-		</div>
-		<div>
-			<form:label path="ageRange">Przedział wiekowy</form:label>
-			<form:input path="ageRange" placeholder="Przedział wiekowy" />
-			<form:errors path="ageRange"></form:errors>
-		</div>
-		<div>
-			<form:label path="gameLength">Długość rozgrywki</form:label>
-			<form:input path="gameLength" type="number"/>
-			<form:errors path="gameLength"></form:errors>
-		</div>
-		<div>
-			<input type="submit" />
-		</div>
-	</form:form>
+	<div style="height: 50px"></div>
 
-	<%@ include file="jspf/footer.jspf"%>
+	<div class="w3-row-padding ">
+
+		<form:form class="w3-container w3-card-4" modelAttribute="boardGame"
+			method="post">
+			<div class="w3-section">
+				<form:label path="title">Tytuł</form:label>
+				<form:input class="w3-input" type="text" path="title" />
+				<form:errors path="title"></form:errors>
+			</div>
+			<div class="w3-section">
+				<form:label path="description">Opis</form:label>
+				<form:textarea class="w3-input" path="description" />
+				<form:errors path="description"></form:errors>
+			</div>
+			<div class="w3-section">
+				<form:label path="category">Kategoria</form:label>
+				<form:select class="w3-input" path="category">
+					<form:option value="">Wybierz kategorie</form:option>
+					<form:options items="${categories}"></form:options>
+				</form:select>
+				<form:errors path="category"></form:errors>
+			</div>
+			<div class="w3-section">
+				<form:label path="publisher">Wydawca</form:label>
+				<form:select class="w3-input" path="publisher">
+					<form:option value="">Wybierz wydawcę</form:option>
+					<form:options items="${publishers}"></form:options>
+				</form:select>
+				<form:errors path="publisher"></form:errors>
+			</div>
+			<div class="w3-section">
+				<form:label path="minNumOfPlayers">Minimalna liczba graczy</form:label>
+				<form:input class="w3-input" path="minNumOfPlayers" type="number" />
+				<form:errors path="minNumOfPlayers"></form:errors>
+			</div>
+			<div class="w3-section">
+				<form:label path="maxNumOfPlayers">Maksymalna liczba graczy</form:label>
+				<form:input class="w3-input" path="maxNumOfPlayers" type="number" />
+				<form:errors path="maxNumOfPlayers"></form:errors>
+			</div>
+			<div class="w3-section">
+				<form:label path="ageRange">Przedział wiekowy</form:label>
+				<form:input class="w3-input" path="ageRange" />
+				<form:errors path="ageRange"></form:errors>
+			</div>
+			<div class="w3-section">
+				<form:label path="gameLength">Długość rozgrywki</form:label>
+				<form:input class="w3-input" path="gameLength" type="number" />
+				<form:errors path="gameLength"></form:errors>
+			</div>
+			<div class="w3-section">
+				<input class="w3-btn w3-theme" type="submit" value="Dodaj grę!" />
+			</div>
+		</form:form>
+	</div>
+	<hr>
+<%@ include file="jspf/footer.jspf"%>
 </body>
 </html>

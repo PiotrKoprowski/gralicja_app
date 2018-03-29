@@ -13,12 +13,61 @@
 		<c:when test="${principal == 'anonymousUser'}">
 			<a href='register'>Register</a>
 			<a href='login'>Login</a>
+			<div class="w3-top">
+					  <div class="w3-bar w3-white w3-card" id="myNavbar">
+					    <!-- Right-sided navbar links -->
+					    <div class="w3-left w3-hide-small">
+						  <a href="register" class="w3-bar-item w3-button w3-wide">Rejestracja</a>
+					      <a href="login" class="w3-bar-item w3-button w3-wide"></i> Logowanie </a>
+					     </div>
+					  <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+					
+					    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+					      <i class="fa fa-bars"></i>
+					    </a>
+					  </div>
+					</div>
+					
+					<!-- Sidebar on small screens when clicking the menu icon -->
+					<nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display:none" id="mySidebar">
+					  <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
+					   <a href="register" class="w3-bar-item w3-button w3-wide">Rejestracja</a>
+					   <a href="login" class="w3-bar-item w3-button w3-wide"></i> Logowanie </a>
+					</nav>
 		</c:when>
 		<c:otherwise>
 			<p>
-				You are signed in as: ${principal.username} <a
-					href="<c:url value="logout" />"> Logout </a>
-			</p>
+			
+			
+			<!-- Navbar (sit on top) -->
+					<div class="w3-top">
+					  <div class="w3-bar w3-white w3-card" id="myNavbar">
+					    <a href="${pageContext.request.contextPath}" class="w3-bar-item w3-button w3-wide">Home</a>
+					    <!-- Right-sided navbar links -->
+					    <div class="w3-right w3-hide-small">
+						  <a class="w3-bar-item">Jesteś zalogowany jako: ${principal.username}</a> 
+						  <a class="w3-bar-item w3-button" href="${pageContext.request.contextPath}/logout"> Wyloguj </a>
+					      <a href="${pageContext.request.contextPath}" class="w3-bar-item w3-button">O nas</a>
+					      <a href="${pageContext.request.contextPath}/gameTables/add" class="w3-bar-item w3-button"><i class="fa fa-user"></i> Załóż stolik </a>
+					      <a href="${pageContext.request.contextPath}/boardGames/add" class="w3-bar-item w3-button"><i class="fa fa-th"></i> Dodaj gre </a>
+					   		
+					    </div>
+					    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+					
+					    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+					      <i class="fa fa-bars"></i>
+					    </a>
+					  </div>
+					</div>
+					
+					<!-- Sidebar on small screens when clicking the menu icon -->
+					<nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display:none" id="mySidebar">
+					  <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
+					  <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button">O nas</a>
+					  <a href="${pageContext.request.contextPath}/gameTables/add" onclick="w3_close()" class="w3-bar-item w3-button">Załóż stolik</a>
+					  <a href="${pageContext.request.contextPath}/boardGames/add" onclick="w3_close()" class="w3-bar-item w3-button">Dodaj gre</a>
+					  <a class="w3-bar-item w3-button" href="<c:url value="logout" />"> Wyloguj </a>
+					</nav>
 		</c:otherwise>
 	</c:choose>
 </p>

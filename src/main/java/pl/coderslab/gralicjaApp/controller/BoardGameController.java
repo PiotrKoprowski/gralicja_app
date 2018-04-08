@@ -39,6 +39,13 @@ public class BoardGameController {
 		return "redirect:/";
 	}
 	
+	@GetMapping("/show")
+	public String show(Model m) {
+		List<BoardGame> boardGameList = boardGameRepository.findAll();
+		m.addAttribute("boardGameList", boardGameList);
+		return "gameList";
+	}
+	
 	@ModelAttribute("categories")
 	public List<String> getCategories(){
 		List<String> categories = new ArrayList<>();

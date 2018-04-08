@@ -18,13 +18,16 @@
 	<div style="height: 50px"></div>
 
 	<div class="w3-row-padding ">
-
+<div class="w3-half">
+<div class="w3-card white">
+<br>
+<h1 style='text-align:center'>Zakładanie stolika</h1>
+  <div class="w3-container">
 		<form:form class="w3-container w3-card-4" modelAttribute="gameTable"
 			method="post">
 			<div class="w3-section">
 				<form:label path="tableName">Nazwa stolika</form:label>
-				<form:input class="w3-input" type="text" path="tableName"
-					placeholder="Nazwa" />
+				<form:input class="w3-input" type="text" path="tableName"/>
 				<form:errors path="tableName"></form:errors>
 			</div>
 			<div class="w3-section">
@@ -66,6 +69,12 @@
 			</div>
 		</form:form>
 	</div>
+	<br>
+	</div>
+	</div>
+	</div>
+
+	
 	<hr>
 <%@ include file="jspf/footer.jspf"%>
 </body>

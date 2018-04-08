@@ -17,7 +17,11 @@
 	<div style="height: 50px"></div>
 
 	<div class="w3-row-padding ">
-
+<div class="w3-half">
+<div class="w3-card white">
+<br>
+<h1 style='text-align:center'>Dodawanie gry</h1>
+  <div class="w3-container">
 		<form:form class="w3-container w3-card-4" modelAttribute="boardGame"
 			method="post">
 			<div class="w3-section">
@@ -71,6 +75,11 @@
 			</div>
 		</form:form>
 	</div>
+	<br>
+	</div>
+	</div>
+	</div>
+	
 	<hr>
 <%@ include file="jspf/footer.jspf"%>
 </body>

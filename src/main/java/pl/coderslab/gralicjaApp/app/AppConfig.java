@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -89,5 +90,11 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 	    localeResolver.setDefaultLocale(new Locale("pl","PL"));
 	    return localeResolver; 
     }
+	
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+		   .allowedMethods("GET", "POST", "PUT", "DELETE");// .allowedOrigins("http://localhost");
+	}
 	
 }

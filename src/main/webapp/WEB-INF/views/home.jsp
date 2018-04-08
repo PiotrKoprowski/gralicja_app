@@ -38,79 +38,73 @@
 
 
 <div class="w3-row-padding w3-center w3-margin-top">
-<div class="w3-quarter" onclick="location.href='${pageContext.request.contextPath}'">
+<a class="w3-quarter" href="${pageContext.request.contextPath}/boardGames/show" style="text-decoration:none">
   <div class="w3-card w3-container" style="min-height:220px">
   <h3>Lista gier</h3><br>
   <i class="fas fa-cube w3-margin-bottom w3-text-theme" style="font-size:120px"></i>
   </div>
-</div>
-<div class="w3-quarter" onclick="location.href='${pageContext.request.contextPath}'">
+</a>
+
+<a class="w3-quarter" href="${pageContext.request.contextPath}" style="text-decoration:none">
   <div class="w3-card w3-container" style="min-height:220px">
   <h3>Plan wydarzenia</h3><br>
   <i class="far fa-list-alt w3-margin-bottom w3-text-theme" style="font-size:120px"></i>
   </div>
-</div>
+</a>
 
-<div class="w3-quarter" onclick="location.href='${pageContext.request.contextPath}'">
+<a class="w3-quarter" href="${pageContext.request.contextPath}" style="text-decoration:none">
   <div class="w3-card w3-container" style="min-height:220px">
   <h3>Konkursy</h3><br>
   <i class="fas fa-chess-queen w3-margin-bottom w3-text-theme" style="font-size:120px"></i>
   </div>
-</div>
+</a>
 
-<div class="w3-quarter" onclick="location.href='${pageContext.request.contextPath}'">
+<a class="w3-quarter" href="${pageContext.request.contextPath}" style="text-decoration:none">
   <div class="w3-card w3-container" style="min-height:220px">
   <h3>Mapa</h3><br>
   <i class="fab fa-leanpub w3-margin-bottom w3-text-theme" style="font-size:120px"></i>
   </div>
-</div>
+</a>
 </div>
 
 
 <hr>
-<h2 class="w3-center">Lista stolików z grami</h2>
+<div class="w3-row-padding ">
+<h2 class="w3-center" id="tableList">Lista stolików z grami</h2>
 
-<button onclick="location.href='${pageContext.request.contextPath}/gameTables/add'" class="w3-padding-16 w3-red w3-button w3-block w3-left-align">Załóż stolik</button>
+<a href="${pageContext.request.contextPath}/gameTables/add" class="w3-padding-16 w3-red w3-button w3-block w3-left-align" style="text-decoration:none">Załóż stolik</a>
 
-<button onclick="myAccFunc('Demo2')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">Open Section 2</button>
-<div id="Demo2" class="w3-hide">
-  <a href="#" class="w3-button w3-block w3-left-align">Link 1</a>
-  <a href="#" class="w3-button w3-block w3-left-align">Link 2</a>
-  <a href="#" class="w3-button w3-block w3-left-align">Link 3</a>
+	<c:forEach items="${gameTables}" var="gameTable">
+		<button onclick="myAccFunc('stolik${gameTable.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${gameTable.tableName} | ${gameTable.boardGame.title} | ${gameTable.day} | ${gameTable.startingHour}</button>
+		<div id="stolik${gameTable.id}" class="w3-hide w3-container">
+		<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
+		<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
+		<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
+		<div>
+		<div class="w3-container">
+		<div class="w3-card w3-quarter">
+			<p>Lista graczy</p>
+			<c:forEach items="${gameTable.users}" var="u">
+			<ul>
+			<li>${u.username}</li>
+			</ul>
+			</c:forEach>
+		</div>		
+		</div>
+			<br>
+			<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}" class="w3-btn w3-green" style="text-decoration:none">Dołącz do stolika</a>
+			<c:forEach items="${gameTable.users}" var="u">
+				<c:if test="${principal.username.equals(u.username)}">
+				<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}" onload="displayHide(przycisk${gameTable.id}${principal.username})" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>	
+				</c:if>	
+			</c:forEach>
+		</div>
+		<br>
+		</div>
+	</c:forEach>
+	
 </div>
-<button onclick="myAccFunc('Demo3')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">Open Section 3</button>
-<div id="Demo3" class="w3-hide w3-black">
-  <div class="w3-container">
-    
-  </div>
-</div>
-
 <hr>
 <%@ include file="jspf/footer.jspf"%>
-<!-- Script for Sidebar, Tabs, Accordions, Progress bars and slideshows -->
-<script>
-
-//Accordions
-function myAccFunc(id) {
-    var x = document.getElementById(id);
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else { 
-        x.className = x.className.replace(" w3-show", "");
-    }
-}
-function w3_open() {
-    if (mySidebar.style.display === 'block') {
-        mySidebar.style.display = 'none';
-    } else {
-        mySidebar.style.display = 'block';
-    }
-}
-function w3_close() {
-    mySidebar.style.display = "none";
-}
-</script>
-
-<script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
 </body>
 </html>

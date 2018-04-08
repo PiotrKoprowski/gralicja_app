@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,7 +51,7 @@ public class GameTable {
 	private int numberOfTable;
 	
 	@NotNull
-	@ManyToMany(cascade = {CascadeType.MERGE})
+	@ManyToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
     private List<User> users = new ArrayList<User>();
 
 
@@ -151,11 +152,11 @@ public class GameTable {
 		this.numberOfTable = numberOfTable;
 	}
 
-	public List<User> getUser() {
+	public List<User> getUsers() {
 		return users;
 	}
 
-	public void setUser(List<User> users) {
+	public void setUsers(List<User> users) {
 		this.users = users;
 	}
 	

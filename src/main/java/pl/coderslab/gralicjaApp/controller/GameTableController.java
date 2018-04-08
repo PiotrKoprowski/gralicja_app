@@ -1,5 +1,6 @@
 package pl.coderslab.gralicjaApp.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +9,15 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -47,17 +51,34 @@ public class GameTableController {
 	}
 	
 	@PostMapping("/add")
-	public String addPost(@Valid @ModelAttribute GameTable gameTable, BindingResult br, HttpSession session) {
+	public String addPost(@Valid @ModelAttribute GameTable gameTable, BindingResult br, HttpSession session, Principal principal) {
 		if(br.hasErrors()) {
 			return "gameTableForm";
 		}
-		User u = (User)session.getAttribute("loggedInUser");
-		List<User> uList = new ArrayList<>();
-		uList.add(u);
-		gameTable.setUser(uList);
+		String name = principal.getName();	
+		User u = userRepository.findByUsername(name);
+		gameTable.getUsers().add(u);
 		gameTable.setActualNumOfPlayers(1);
 		this.gameTableRepository.save(gameTable);
 		return "redirect:/";
+	}
+	
+	@RequestMapping("/addToTable/{tableId}/{username}")
+	private String addToTable(@PathVariable long tableId,	@PathVariable String username) {
+		GameTable gameTable = gameTableRepository.findOne(tableId);
+		User u = userRepository.findByUsername(username);
+		gameTable.getUsers().add(u);
+		this.gameTableRepository.save(gameTable);
+	    return "redirect:/";
+	}
+	
+	@RequestMapping("/deleteFromTable/{tableId}/{username}")
+	private String deleteFromTable(@PathVariable long tableId,	@PathVariable String username) {
+		GameTable gameTable = gameTableRepository.findOne(tableId);
+		User u = userRepository.findByUsername(username);
+		gameTable.getUsers().remove(u);
+		this.gameTableRepository.save(gameTable);
+	    return "redirect:/";
 	}
 	
 	@ModelAttribute("games")

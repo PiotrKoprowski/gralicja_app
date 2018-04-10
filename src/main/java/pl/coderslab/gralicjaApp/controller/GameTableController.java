@@ -68,6 +68,7 @@ public class GameTableController {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
 		gameTable.getUsers().add(u);
+		gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
 		this.gameTableRepository.save(gameTable);
 	    return "redirect:/";
 	}
@@ -77,7 +78,12 @@ public class GameTableController {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
 		gameTable.getUsers().remove(u);
-		this.gameTableRepository.save(gameTable);
+		if(gameTable.getUsers().size()==0) {
+			this.gameTableRepository.delete(gameTable);
+		} else {
+			gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
+			this.gameTableRepository.save(gameTable);
+		}
 	    return "redirect:/";
 	}
 	

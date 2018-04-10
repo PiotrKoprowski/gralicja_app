@@ -5,6 +5,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
+
+
 <head>
 <%@ include file="jspf/head_config.jspf"%>
 
@@ -22,6 +24,12 @@
         margin-left: auto;
         margin-right: auto;
 }
+.przycisk:first-child{
+	display: none;
+}
+.przycisk:last-child{
+	display: inline-block;
+}
 </style>
 <body>
 
@@ -36,7 +44,7 @@
 <header class="bgimg-1 w3-display-container w3-grayscale-min"  height:200px id="myHeader">
 </header>
 
-
+<h1>TEST CSSA</h1>
 <div class="w3-row-padding w3-center w3-margin-top">
 <a class="w3-quarter" href="${pageContext.request.contextPath}/boardGames/show" style="text-decoration:none">
   <div class="w3-card w3-container" style="min-height:220px">
@@ -92,16 +100,28 @@
 		</div>		
 		</div>
 			<br>
-			<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}" class="w3-btn w3-green" style="text-decoration:none">Dołącz do stolika</a>
+			<div>
+			<c:if test="${gameTable.actualNumOfPlayers < gameTable.maxNumOfPlayers}">
+			<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}" class="w3-btn w3-green przycisk" style="text-decoration:none">Dołącz do stolika</a>
+			</c:if>
+			
 			<c:forEach items="${gameTable.users}" var="u">
 				<c:if test="${principal.username.equals(u.username)}">
-				<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}" onload="displayHide(przycisk${gameTable.id}${principal.username})" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>	
+				<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}" class="w3-btn w3-red przycisk" style="text-decoration:none">Odejdź ze stolika</a>	
 				</c:if>	
 			</c:forEach>
+			</div>
+			
+			<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
+				<p id="przycisk${gameTable.id}${principal.username}" class="w3-btn w3-blue">Stolik jest pełny!</p>
+			</c:if>
 		</div>
 		<br>
 		</div>
 	</c:forEach>
+	
+	
+	
 	
 </div>
 <hr>

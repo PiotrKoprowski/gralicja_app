@@ -50,7 +50,7 @@ public class GameTable {
 
 	private int numberOfTable;
 	
-	@NotNull
+	
 	@ManyToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
     private List<User> users = new ArrayList<User>();
 

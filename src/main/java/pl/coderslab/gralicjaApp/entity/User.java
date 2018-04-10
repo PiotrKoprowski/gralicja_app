@@ -2,6 +2,7 @@ package pl.coderslab.gralicjaApp.entity;
 
 import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @Column(unique=true)
     private String username;
+    
+    @Column(unique=true)
     private String email;
     private String password;
     private boolean enabled;

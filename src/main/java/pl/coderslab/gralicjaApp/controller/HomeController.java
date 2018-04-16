@@ -9,8 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import pl.coderslab.gralicjaApp.entity.GameTable;
-import pl.coderslab.gralicjaApp.entity.User;
+import pl.coderslab.gralicjaApp.entity.UserKnowingRules;
 import pl.coderslab.gralicjaApp.repository.GameTableRepository;
+import pl.coderslab.gralicjaApp.repository.UserKnowingRulesRepository;
 import pl.coderslab.gralicjaApp.repository.UserRepository;
 
 @Controller
@@ -22,17 +23,15 @@ public class HomeController {
 	@Autowired
 	UserRepository userRepository;
 	
-	@GetMapping("")
-	public String home(Model m, Principal principal) {
+	@Autowired
+	UserKnowingRulesRepository userKnowingRulesRepository;
 	
-//		String name = principal.getName();	
-//		User u = userRepository.findByUsername(name);
-//		List <GameTable> userGameTables = gameTableRepository.findByUsers(u);
-//		m.addAttribute("userGameTables", userGameTables);
+	@GetMapping("")
+	public String home(Model m, Principal principal) {		
 		List <GameTable> gameTables = gameTableRepository.findAll();
-		
 		m.addAttribute("gameTables", gameTables);
-
+		List <UserKnowingRules> userKnowingRules = userKnowingRulesRepository.findAll();
+		m.addAttribute("userKnowingRules", userKnowingRules);
 		return "home";
 	}
 	

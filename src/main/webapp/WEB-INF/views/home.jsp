@@ -24,12 +24,6 @@
         margin-left: auto;
         margin-right: auto;
 }
-.przycisk:first-child{
-	display: none;
-}
-.przycisk:last-child{
-	display: inline-block;
-}
 </style>
 <body>
 
@@ -44,7 +38,6 @@
 <header class="bgimg-1 w3-display-container w3-grayscale-min"  height:200px id="myHeader">
 </header>
 
-<h1>TEST CSSA</h1>
 <div class="w3-row-padding w3-center w3-margin-top">
 <a class="w3-quarter" href="${pageContext.request.contextPath}/boardGames/show" style="text-decoration:none">
   <div class="w3-card w3-container" style="min-height:220px">
@@ -77,51 +70,194 @@
 
 
 <hr>
-<div class="w3-row-padding ">
+<div class="w3-row-padding">
 <h2 class="w3-center" id="tableList">Lista stolików z grami</h2>
 
 <a href="${pageContext.request.contextPath}/gameTables/add" class="w3-padding-16 w3-red w3-button w3-block w3-left-align" style="text-decoration:none">Załóż stolik</a>
 
+<%-- Joined tables --%>
+<div class="w3-padding-16 w3-white w3-button w3-block w3-left-align w3-hover-white">Stoliki w których jestem dodany</div>
 	<c:forEach items="${gameTables}" var="gameTable">
-		<button onclick="myAccFunc('stolik${gameTable.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${gameTable.tableName} | ${gameTable.boardGame.title} | ${gameTable.day} | ${gameTable.startingHour}</button>
-		<div id="stolik${gameTable.id}" class="w3-hide w3-container">
-		<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
-		<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
-		<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
-		<div>
-		<div class="w3-container">
-		<div class="w3-card w3-quarter">
-			<p>Lista graczy</p>
-			<c:forEach items="${gameTable.users}" var="u">
-			<ul>
-			<li>${u.username}</li>
-			</ul>
-			</c:forEach>
-		</div>		
-		</div>
-			<br>
+		<c:forEach items="${gameTable.users}" var="gameTableUser">
+		<c:if test="${gameTableUser.username.equals(principal.username)}">
+			<button onclick="myAccFunc('stolik${gameTable.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${gameTable.boardGame.title} | ${gameTable.day} | ${gameTable.startingHour} | ${gameTable.tableName}</button>
+			<div id="stolik${gameTable.id}" class="w3-hide w3-container">
+			<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
+			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
+			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
+			<p>Czy założyciel stolika zna zasady?
+				<c:if test="${gameTable.familiarWithGame}">
+				<b>Tak</b>
+				</c:if>
+				<c:if test="${!gameTable.familiarWithGame}">
+				<b>Nie</b>
+				</c:if>
+			</p>
 			<div>
-			<c:if test="${gameTable.actualNumOfPlayers < gameTable.maxNumOfPlayers}">
-			<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}" class="w3-btn w3-green przycisk" style="text-decoration:none">Dołącz do stolika</a>
-			</c:if>
-			
-			<c:forEach items="${gameTable.users}" var="u">
-				<c:if test="${principal.username.equals(u.username)}">
-				<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}" class="w3-btn w3-red przycisk" style="text-decoration:none">Odejdź ze stolika</a>	
-				</c:if>	
-			</c:forEach>
+			<div class="w3-container">
+			<div class="w3-card w3-quarter">
+				<p>Lista graczy | znajomość zasad</p>
+				<c:forEach items="${gameTable.users}" var="u">
+				<ul>
+				<li>${u.username} | 
+					
+					<%-- loop to see if user know game rules --%>
+					<c:forEach items="${userKnowingRules}" var="uKR">
+					<c:if test="${uKR.user.id==u.id && uKR.boardGame.id==gameTable.boardGame.id && uKR.gameTable.id==gameTable.id && uKR.knowingRules}">
+					TAK
+					</c:if>
+					<c:if test="${uKR.user.id==u.id && uKR.boardGame.id==gameTable.boardGame.id && uKR.gameTable.id==gameTable.id && !uKR.knowingRules}">
+					NIE 
+					</c:if>
+					
+					<c:if test="${uKR.user.username.equals(principal.username) && uKR.boardGame.id==gameTable.boardGame.id && uKR.gameTable.id==gameTable.id}">
+					<c:set var="knowingRulesUserId" value="${uKR.id}" scope="page" />
+					</c:if>
+					
+					</c:forEach>
+					
+				</li>
+				</ul>
+				</c:forEach>
+			</div>		
+			</div>
+				<br>
+				
+				<%-- Leave button --%>
+				<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}/${knowingRulesUserId}" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>	
+				
+				<%-- Information about full table --%>
+				<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
+					<p id="przycisk${gameTable.id}${principal.username}" class="w3-btn w3-blue">Stolik jest pełny!</p>
+				</c:if>
+			</div>
+			<br>
 			</div>
 			
-			<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
-				<p id="przycisk${gameTable.id}${principal.username}" class="w3-btn w3-blue">Stolik jest pełny!</p>
-			</c:if>
-		</div>
-		<br>
-		</div>
+		</c:if>
+		</c:forEach>
 	</c:forEach>
-	
-	
-	
+<hr></hr>
+
+<%-- Else but not full tables --%>
+<div class="w3-padding-16 w3-white w3-button w3-block w3-left-align w3-hover-white">Pozostałe stoliki</div>
+	<c:forEach items="${gameTables}" var="gameTable">
+			<%
+				int loggedInUser = 0;
+				pageContext.setAttribute("loggedInUser", loggedInUser);
+			%>
+			<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
+				<%
+					loggedInUser = 1;
+					pageContext.setAttribute("loggedInUser", loggedInUser);
+				%>
+			</c:if>
+		<c:forEach items="${gameTable.users}" var="gameTableUser">
+		<c:if test="${gameTableUser.username.equals(principal.username)}">
+			<%
+				loggedInUser = 1;
+				pageContext.setAttribute("loggedInUser", loggedInUser);
+			%>
+		</c:if>
+		</c:forEach>
+		<c:if test="${loggedInUser == 0}">
+		<button onclick="myAccFunc('stolik${gameTable.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${gameTable.boardGame.title} | ${gameTable.day} | ${gameTable.startingHour} | ${gameTable.tableName}</button>
+			<div id="stolik${gameTable.id}" class="w3-hide w3-container">
+			<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
+			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
+			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
+			<p>Czy któryś z graczy zna zasady? 
+				<c:if test="${gameTable.familiarWithGame}">
+				<b>Tak</b>
+				</c:if>
+				<c:if test="${!gameTable.familiarWithGame}">
+				<b>Nie</b>
+				</c:if>
+			</p>
+			<div>
+			<div class="w3-container">
+			<div class="w3-card w3-quarter">
+				<p>Lista graczy | znajomość zasad</p>
+				<c:forEach items="${gameTable.users}" var="u">
+				<ul>
+				<li>${u.username} | 
+				<c:forEach items="${userKnowingRules}" var="uKR">
+				<c:if test="${uKN.user==u && uKN.boardGame==gameTable.boardGame && uKN.knowingRules==true}"> TAK </c:if>
+				</c:forEach>
+				<c:forEach items="${userKnowingRules}" var="uKR">
+				<c:if test="${uKN.user==u && uKN.boardGame==gameTable.boardGame && uKN.knowingRules==true}"> NIE </c:if>
+				</c:forEach>
+				</li>
+				</ul>
+				</c:forEach>
+					<br>
+					<div class="w3-container w3-center">
+					
+					<%-- Join buttons --%>
+						<h5>Dołącz do stolika</h5>
+						<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}" class="w3-btn w3-green" style="text-decoration:none">Znam zasady</a>
+						<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}" class="w3-btn w3-teal" style="text-decoration:none">Nie znam zasad</a>
+						<br></br>
+					
+					</div>
+				</div>		
+				</div>
+			</div>
+			<br>
+			</div>
+			</c:if>	
+	</c:forEach>
+<hr></hr>	
+
+<%-- Else and full tables --%>
+<div class="w3-padding-16 w3-white w3-button w3-block w3-left-align w3-hover-white">Pełne stoliki</div>
+	<c:forEach items="${gameTables}" var="gameTable">
+			<%
+				int loggedInUser = 0;
+				pageContext.setAttribute("loggedInUser", loggedInUser);
+			%>
+			<c:if test="${gameTable.actualNumOfPlayers < gameTable.maxNumOfPlayers}">
+				<%
+					loggedInUser = 1;
+					pageContext.setAttribute("loggedInUser", loggedInUser);
+				%>
+			</c:if>
+		<c:forEach items="${gameTable.users}" var="gameTableUser">
+		<c:if test="${gameTableUser.username.equals(principal.username)}">
+			<%
+				loggedInUser = 1;
+				pageContext.setAttribute("loggedInUser", loggedInUser);
+			%>
+		</c:if>
+		</c:forEach>
+		<c:if test="${loggedInUser == 0}">
+		<button onclick="myAccFunc('stolik${gameTable.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${gameTable.boardGame.title} | ${gameTable.day} | ${gameTable.startingHour} | ${gameTable.tableName}</button>
+			<div id="stolik${gameTable.id}" class="w3-hide w3-container">
+			<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
+			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
+			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
+			<div>
+			<div class="w3-container">
+			<div class="w3-card w3-quarter">
+				<p>Lista graczy</p>
+				<c:forEach items="${gameTable.users}" var="u">
+				<ul>
+				<li>${u.username}</li>
+				</ul>
+				</c:forEach>
+			</div>		
+			</div>
+				<br>
+				
+				<%-- Information about full table --%>
+				<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
+					<p id="przycisk${gameTable.id}${principal.username}" class="w3-btn w3-blue">Stolik jest pełny!</p>
+				</c:if>
+			</div>
+			<br>
+			</div>
+			</c:if>	
+	</c:forEach>	
 	
 </div>
 <hr>

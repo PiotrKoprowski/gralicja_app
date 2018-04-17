@@ -6,7 +6,6 @@
 	version="2.1">
 	<persistence-unit name="default">
 		<properties>
-		<!--jboss/datasources/defaultDS  -->
 			<property name="javax.persistence.jdbc.url"
 				value="jdbc:mysql://localhost:3306/gralicja_app?autoReconnect=true&amp;createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8" />
 			<property name="javax.persistence.jdbc.user" value="root" />

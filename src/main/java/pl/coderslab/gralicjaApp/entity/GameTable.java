@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -52,7 +53,12 @@ public class GameTable {
 	
 	
 	@ManyToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
-    private List<User> users = new ArrayList<User>();
+    private List<User> users = new ArrayList<>();
+	
+	
+	@OneToMany(cascade = CascadeType.MERGE)
+	@JoinColumn(name="id_userKnowingRules")
+	private List<UserKnowingRules> userKnowingRules = new ArrayList<>();
 
 
 	public GameTable() {
@@ -60,16 +66,17 @@ public class GameTable {
 	}
 
 	public GameTable(String tableName, BoardGame boardGame, int maxNumOfPlayers, int actualNumOfPlayers,
-			boolean familiarWithGame, String day, String startingHour, List<User> users) {
+			boolean familiarWithGame, String day, String startingHour, List<User> users, List<UserKnowingRules> userKnowingRules) {
 		super();
 		this.tableName = tableName;
 		this.boardGame = boardGame;
 		this.maxNumOfPlayers = maxNumOfPlayers;
 		this.actualNumOfPlayers = actualNumOfPlayers;
-		this.familiarWithGame = familiarWithGame;
 		this.day = day;
 		this.startingHour = startingHour;
 		this.users = users;
+		this.familiarWithGame = familiarWithGame;
+		this.userKnowingRules = userKnowingRules;
 	}
 
 	public long getId() {
@@ -159,7 +166,13 @@ public class GameTable {
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
-	
-	
+
+	public List<UserKnowingRules> getUserKnowingRules() {
+		return userKnowingRules;
+	}
+
+	public void setUserKnowingRules(List<UserKnowingRules> userKnowingRules) {
+		this.userKnowingRules = userKnowingRules;
+	}
 
 }

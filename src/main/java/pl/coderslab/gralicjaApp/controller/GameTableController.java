@@ -9,9 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,20 +63,26 @@ public class GameTableController {
 		gameTable.getUsers().add(u);
 		gameTable.setActualNumOfPlayers(1);
 		this.gameTableRepository.save(gameTable);
-		BoardGame boardGame = gameTable.getBoardGame();
+//		BoardGame boardGame = gameTable.getBoardGame();
 		boolean knowingRules = gameTable.isFamiliarWithGame();
-		UserKnowingRules userKR = new UserKnowingRules(u, boardGame, gameTable, knowingRules);
+		UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
 		this.userKnowingRulesRepository.save(userKR);
+		gameTable.getUserKnowingRules().add(userKR);
 		return "redirect:/";
 	}
 	
 	@RequestMapping("/addToTable/{tableId}/{username}")
-	private String addToTable(@PathVariable long tableId,	@PathVariable String username) {
+	private String addToTable(@PathVariable long tableId,	@PathVariable String username,  HttpSession session) {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
 		gameTable.getUsers().add(u);
 		gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
-		this.gameTableRepository.save(gameTable);
+//		BoardGame boardGame = gameTable.getBoardGame();
+		boolean knowingRules = true;
+		UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
+		this.userKnowingRulesRepository.save(userKR);
+		gameTable.getUserKnowingRules().add(userKR);
+//		this.gameTableRepository.save(gameTable);
 	    return "redirect:/";
 	}
 	

@@ -18,22 +18,21 @@ public class UserKnowingRules {
     @JoinColumn(name = "user_id")
     private User user;
     
-    @ManyToOne
-    @JoinColumn(name = "boardGame_id")
-    private BoardGame boardGame;
-    
-    @ManyToOne
-    @JoinColumn(name = "gameTable_id")
-    private GameTable gameTable;
+//    @ManyToOne
+//    @JoinColumn(name = "boardGame_id")
+//    private BoardGame boardGame;
+//    
+
+//    private GameTable gameTable;
     
     private boolean knowingRules;
 
 
-    public UserKnowingRules(User user, BoardGame boardGame, GameTable gameTable, boolean knowingRules) {
+    public UserKnowingRules(User user, boolean knowingRules) {
 		super();
 		this.user = user;
-		this.boardGame = boardGame;
-		this.gameTable = gameTable;
+//		this.boardGame = boardGame;
+//		this.gameTable = gameTable;
 		this.knowingRules = knowingRules;
 	}
 
@@ -57,13 +56,13 @@ public class UserKnowingRules {
 		this.user = user;
 	}
 
-	public BoardGame getBoardGame() {
-		return boardGame;
-	}
-
-	public void setBoardGame(BoardGame boardGame) {
-		this.boardGame = boardGame;
-	}
+//	public BoardGame getBoardGame() {
+//		return boardGame;
+//	}
+//
+//	public void setBoardGame(BoardGame boardGame) {
+//		this.boardGame = boardGame;
+//	}
 
 	public boolean isKnowingRules() {
 		return knowingRules;
@@ -73,12 +72,12 @@ public class UserKnowingRules {
 		this.knowingRules = knowingRules;
 	}
 
-	public GameTable getGameTable() {
-		return gameTable;
-	}
-
-	public void setGameTable(GameTable gameTable) {
-		this.gameTable = gameTable;
-	}
+//	public GameTable getGameTable() {
+//		return gameTable;
+//	}
+//
+//	public void setGameTable(GameTable gameTable) {
+//		this.gameTable = gameTable;
+//	}
 
 }

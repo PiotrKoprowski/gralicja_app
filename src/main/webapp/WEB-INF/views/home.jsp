@@ -100,21 +100,7 @@
 				<c:forEach items="${gameTable.users}" var="u">
 				<ul>
 				<li>${u.username} | 
-					
-					<%-- loop to see if user know game rules --%>
-					<c:forEach items="${userKnowingRules}" var="uKR">
-					<c:if test="${uKR.user.id==u.id && uKR.boardGame.id==gameTable.boardGame.id && uKR.gameTable.id==gameTable.id && uKR.knowingRules}">
-					TAK
-					</c:if>
-					<c:if test="${uKR.user.id==u.id && uKR.boardGame.id==gameTable.boardGame.id && uKR.gameTable.id==gameTable.id && !uKR.knowingRules}">
-					NIE 
-					</c:if>
-					
-					<c:if test="${uKR.user.username.equals(principal.username) && uKR.boardGame.id==gameTable.boardGame.id && uKR.gameTable.id==gameTable.id}">
-					<c:set var="knowingRulesUserId" value="${uKR.id}" scope="page" />
-					</c:if>
-					
-					</c:forEach>
+
 					
 				</li>
 				</ul>
@@ -124,7 +110,7 @@
 				<br>
 				
 				<%-- Leave button --%>
-				<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}/${knowingRulesUserId}" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>	
+				<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>	
 				
 				<%-- Information about full table --%>
 				<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
@@ -181,12 +167,7 @@
 				<c:forEach items="${gameTable.users}" var="u">
 				<ul>
 				<li>${u.username} | 
-				<c:forEach items="${userKnowingRules}" var="uKR">
-				<c:if test="${uKN.user==u && uKN.boardGame==gameTable.boardGame && uKN.knowingRules==true}"> TAK </c:if>
-				</c:forEach>
-				<c:forEach items="${userKnowingRules}" var="uKR">
-				<c:if test="${uKN.user==u && uKN.boardGame==gameTable.boardGame && uKN.knowingRules==true}"> NIE </c:if>
-				</c:forEach>
+				
 				</li>
 				</ul>
 				</c:forEach>

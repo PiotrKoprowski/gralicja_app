@@ -26,6 +26,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import pl.coderslab.converter.BoardGameConverter;
+import pl.coderslab.converter.GameTableConverter;
+import pl.coderslab.converter.UserKnowingRulesConverter;
 
 @Configuration
 @EnableWebMvc
@@ -76,12 +78,24 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 	public void addFormatters(FormatterRegistry registry) {
 		super.addFormatters(registry);
 		registry.addConverter( getBoardGameConverter() );
+		registry.addConverter( getGameTableConverter() );
+		registry.addConverter( getUserKnowingRulesConverter() );
 		
 	}
 	
 	@Bean
 	public BoardGameConverter getBoardGameConverter() {
 		return new BoardGameConverter();
+	}
+	
+	@Bean
+	public GameTableConverter getGameTableConverter() {
+		return new GameTableConverter();
+	}
+	
+	@Bean
+	public UserKnowingRulesConverter getUserKnowingRulesConverter() {
+		return new UserKnowingRulesConverter();
 	}
 	
 	@Bean(name="localeResolver")

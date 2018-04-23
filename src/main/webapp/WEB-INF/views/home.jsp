@@ -85,23 +85,39 @@
 			<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
 			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
 			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
-			<p>Czy założyciel stolika zna zasady?
-				<c:if test="${gameTable.familiarWithGame}">
-				<b>Tak</b>
+			<p>Czy któryś z graczy zna zasady? 
+			<%
+				int knowingRules = 0;
+				pageContext.setAttribute("knowingRules", knowingRules);
+			%>
+				<c:forEach items="${gameTable.userKnowingRules}" var="u">
+					<c:if test="${u.knowingRules}">
+					<%
+						knowingRules = 1;
+						pageContext.setAttribute("knowingRules", knowingRules);
+					%>
+					</c:if>
+				</c:forEach>
+				<c:if test="${knowingRules == 1}">
+					<b>Tak</b>
 				</c:if>
-				<c:if test="${!gameTable.familiarWithGame}">
-				<b>Nie</b>
+				<c:if test="${knowingRules == 0}">
+					<b>Nie</b>
 				</c:if>
 			</p>
 			<div>
 			<div class="w3-container">
 			<div class="w3-card w3-quarter">
 				<p>Lista graczy | znajomość zasad</p>
-				<c:forEach items="${gameTable.users}" var="u">
+				<c:forEach items="${gameTable.userKnowingRules}" var="u">
 				<ul>
-				<li>${u.username} | 
-
-					
+				<li>${u.user.username} | 
+						<c:if test="${u.knowingRules}">
+							<b>Tak</b>
+						</c:if>
+						<c:if test="${!u.knowingRules}">
+							<b>Nie</b>
+						</c:if>				
 				</li>
 				</ul>
 				</c:forEach>
@@ -110,8 +126,12 @@
 				<br>
 				
 				<%-- Leave button --%>
-				<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>	
-				
+				<c:forEach items="${gameTable.userKnowingRules}" var="u">
+					<c:if test="${u.user.username.equals(principal.username)}">
+					<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}/${u.id}" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>	
+					</c:if>
+				</c:forEach>
+								
 				<%-- Information about full table --%>
 				<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
 					<p id="przycisk${gameTable.id}${principal.username}" class="w3-btn w3-blue">Stolik jest pełny!</p>
@@ -153,21 +173,38 @@
 			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
 			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
 			<p>Czy któryś z graczy zna zasady? 
-				<c:if test="${gameTable.familiarWithGame}">
-				<b>Tak</b>
+			<%
+				int knowingRules = 0;
+				pageContext.setAttribute("knowingRules", knowingRules);
+			%>
+				<c:forEach items="${gameTable.userKnowingRules}" var="u">
+					<c:if test="${u.knowingRules}">
+					<%
+						knowingRules = 1;
+						pageContext.setAttribute("knowingRules", knowingRules);
+					%>
+					</c:if>
+				</c:forEach>
+				<c:if test="${knowingRules == 1}">
+					<b>Tak</b>
 				</c:if>
-				<c:if test="${!gameTable.familiarWithGame}">
-				<b>Nie</b>
+				<c:if test="${knowingRules == 0}">
+					<b>Nie</b>
 				</c:if>
 			</p>
 			<div>
 			<div class="w3-container">
 			<div class="w3-card w3-quarter">
 				<p>Lista graczy | znajomość zasad</p>
-				<c:forEach items="${gameTable.users}" var="u">
+				<c:forEach items="${gameTable.userKnowingRules}" var="u">
 				<ul>
-				<li>${u.username} | 
-				
+				<li>${u.user.username} | 
+						<c:if test="${u.knowingRules}">
+							<b>Tak</b>
+						</c:if>
+						<c:if test="${!u.knowingRules}">
+							<b>Nie</b>
+						</c:if>				
 				</li>
 				</ul>
 				</c:forEach>
@@ -176,8 +213,8 @@
 					
 					<%-- Join buttons --%>
 						<h5>Dołącz do stolika</h5>
-						<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}" class="w3-btn w3-green" style="text-decoration:none">Znam zasady</a>
-						<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}" class="w3-btn w3-teal" style="text-decoration:none">Nie znam zasad</a>
+						<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}/true" class="w3-btn w3-green" style="text-decoration:none">Znam zasady</a>
+						<a id="przycisk${gameTable.id}${principal.username}" href="${pageContext.request.contextPath}/gameTables/addToTable/${gameTable.id}/${principal.username}/false" class="w3-btn w3-teal" style="text-decoration:none">Nie znam zasad</a>
 						<br></br>
 					
 					</div>

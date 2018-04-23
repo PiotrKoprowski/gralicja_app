@@ -17,22 +17,13 @@ public class UserKnowingRules {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    
-//    @ManyToOne
-//    @JoinColumn(name = "boardGame_id")
-//    private BoardGame boardGame;
-//    
 
-//    private GameTable gameTable;
-    
     private boolean knowingRules;
 
 
     public UserKnowingRules(User user, boolean knowingRules) {
 		super();
 		this.user = user;
-//		this.boardGame = boardGame;
-//		this.gameTable = gameTable;
 		this.knowingRules = knowingRules;
 	}
 
@@ -56,14 +47,6 @@ public class UserKnowingRules {
 		this.user = user;
 	}
 
-//	public BoardGame getBoardGame() {
-//		return boardGame;
-//	}
-//
-//	public void setBoardGame(BoardGame boardGame) {
-//		this.boardGame = boardGame;
-//	}
-
 	public boolean isKnowingRules() {
 		return knowingRules;
 	}
@@ -71,13 +54,5 @@ public class UserKnowingRules {
 	public void setKnowingRules(boolean knowingRules) {
 		this.knowingRules = knowingRules;
 	}
-
-//	public GameTable getGameTable() {
-//		return gameTable;
-//	}
-//
-//	public void setGameTable(GameTable gameTable) {
-//		this.gameTable = gameTable;
-//	}
 
 }

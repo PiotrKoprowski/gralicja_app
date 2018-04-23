@@ -62,41 +62,39 @@ public class GameTableController {
 		User u = userRepository.findByUsername(name);
 		gameTable.getUsers().add(u);
 		gameTable.setActualNumOfPlayers(1);
-		this.gameTableRepository.save(gameTable);
-//		BoardGame boardGame = gameTable.getBoardGame();
 		boolean knowingRules = gameTable.isFamiliarWithGame();
 		UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
 		this.userKnowingRulesRepository.save(userKR);
 		gameTable.getUserKnowingRules().add(userKR);
+		this.gameTableRepository.save(gameTable);
 		return "redirect:/";
 	}
 	
-	@RequestMapping("/addToTable/{tableId}/{username}")
-	private String addToTable(@PathVariable long tableId,	@PathVariable String username,  HttpSession session) {
+	@RequestMapping("/addToTable/{tableId}/{username}/{rules}")
+	private String addToTable(@PathVariable long tableId,	@PathVariable String username, @PathVariable String rules,  HttpSession session) {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
 		gameTable.getUsers().add(u);
 		gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
-//		BoardGame boardGame = gameTable.getBoardGame();
-		boolean knowingRules = true;
+		boolean knowingRules = Boolean.parseBoolean(rules);
 		UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
 		this.userKnowingRulesRepository.save(userKR);
 		gameTable.getUserKnowingRules().add(userKR);
-//		this.gameTableRepository.save(gameTable);
+		this.gameTableRepository.save(gameTable);	
 	    return "redirect:/";
 	}
 	
-	@RequestMapping("/deleteFromTable/{tableId}/{username}/{knowingRulesUserId}")
-	private String deleteFromTable(@PathVariable long tableId,	@PathVariable String username, @PathVariable long knowingRulesUserId) {
+	@RequestMapping("/deleteFromTable/{tableId}/{username}/{userKnowingRulesId}")
+	private String deleteFromTable(@PathVariable long tableId,	@PathVariable String username, @PathVariable long userKnowingRulesId) {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
 		gameTable.getUsers().remove(u);
+//		UserKnowingRules userKnowingRules = userKnowingRulesRepository.findOne(userKnowingRulesId);
 		if(gameTable.getUsers().size()==0) {
-			this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(knowingRulesUserId));
+			this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(userKnowingRulesId));
 			this.gameTableRepository.delete(gameTable);
-			
 		} else {
-			this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(knowingRulesUserId));
+			this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(userKnowingRulesId));
 			gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
 			this.gameTableRepository.save(gameTable);
 		}

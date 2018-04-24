@@ -126,11 +126,7 @@
 				<br>
 				
 				<%-- Leave button --%>
-				<c:forEach items="${gameTable.userKnowingRules}" var="u">
-					<c:if test="${u.user.username.equals(principal.username)}">
-					<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}/${u.id}" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>	
-					</c:if>
-				</c:forEach>
+					<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>
 								
 				<%-- Information about full table --%>
 				<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">

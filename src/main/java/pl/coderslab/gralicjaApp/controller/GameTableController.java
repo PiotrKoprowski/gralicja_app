@@ -27,6 +27,7 @@ import pl.coderslab.gralicjaApp.repository.BoardGameRepository;
 import pl.coderslab.gralicjaApp.repository.GameTableRepository;
 import pl.coderslab.gralicjaApp.repository.UserKnowingRulesRepository;
 import pl.coderslab.gralicjaApp.repository.UserRepository;
+import pl.coderslab.gralicjaApp.service.GameTableService;
 
 @Controller
 @RequestMapping("/gameTables")
@@ -43,6 +44,9 @@ public class GameTableController {
 	
 	@Autowired
 	UserKnowingRulesRepository userKnowingRulesRepository;
+	
+	@Autowired
+	GameTableService gameTableService;
 	
 	@PersistenceContext
 	EntityManager entityManager;
@@ -84,20 +88,27 @@ public class GameTableController {
 	    return "redirect:/";
 	}
 	
-	@RequestMapping("/deleteFromTable/{tableId}/{username}/{userKnowingRulesId}")
-	private String deleteFromTable(@PathVariable long tableId,	@PathVariable String username, @PathVariable long userKnowingRulesId) {
+	@RequestMapping("/deleteFromTable/{tableId}/{username}")
+	private String deleteFromTable(@PathVariable long tableId,	@PathVariable String username) {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
 		gameTable.getUsers().remove(u);
-//		UserKnowingRules userKnowingRules = userKnowingRulesRepository.findOne(userKnowingRulesId);
+		// finding userKnowingRules id
+		long userKnowingRulesId = 0;
+		List<UserKnowingRules> usersKnowingRulesList = gameTable.getUserKnowingRules();
+		for (UserKnowingRules userKnowingRules : usersKnowingRulesList) {
+			if(userKnowingRules.getUser().getUsername().equals(username)) {
+				userKnowingRulesId = userKnowingRules.getId();
+				gameTable.getUserKnowingRules().remove(userKnowingRules);
+			}
+		}	
 		if(gameTable.getUsers().size()==0) {
-			this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(userKnowingRulesId));
 			this.gameTableRepository.delete(gameTable);
 		} else {
-			this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(userKnowingRulesId));
 			gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
 			this.gameTableRepository.save(gameTable);
 		}
+		this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(userKnowingRulesId));
 	    return "redirect:/";
 	}
 	

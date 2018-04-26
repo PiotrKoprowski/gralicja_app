@@ -27,6 +27,8 @@ import org.springframework.web.servlet.view.JstlView;
 
 import pl.coderslab.converter.BoardGameConverter;
 import pl.coderslab.converter.GameTableConverter;
+import pl.coderslab.converter.TableNumberConverter;
+import pl.coderslab.converter.TableReservationConverter;
 import pl.coderslab.converter.UserKnowingRulesConverter;
 
 @Configuration
@@ -80,7 +82,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		registry.addConverter( getBoardGameConverter() );
 		registry.addConverter( getGameTableConverter() );
 		registry.addConverter( getUserKnowingRulesConverter() );
-		
+		registry.addConverter( getTableNumberConverter() );
+		registry.addConverter( getTableReservationConverter() );
 	}
 	
 	@Bean
@@ -96,6 +99,16 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public UserKnowingRulesConverter getUserKnowingRulesConverter() {
 		return new UserKnowingRulesConverter();
+	}
+	
+	@Bean
+	public TableNumberConverter getTableNumberConverter() {
+		return new TableNumberConverter();
+	}
+	
+	@Bean
+	public TableReservationConverter getTableReservationConverter() {
+		return new TableReservationConverter();
 	}
 	
 	@Bean(name="localeResolver")

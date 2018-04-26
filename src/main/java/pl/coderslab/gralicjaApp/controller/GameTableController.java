@@ -27,7 +27,6 @@ import pl.coderslab.gralicjaApp.repository.BoardGameRepository;
 import pl.coderslab.gralicjaApp.repository.GameTableRepository;
 import pl.coderslab.gralicjaApp.repository.UserKnowingRulesRepository;
 import pl.coderslab.gralicjaApp.repository.UserRepository;
-import pl.coderslab.gralicjaApp.service.GameTableService;
 
 @Controller
 @RequestMapping("/gameTables")
@@ -44,10 +43,7 @@ public class GameTableController {
 	
 	@Autowired
 	UserKnowingRulesRepository userKnowingRulesRepository;
-	
-	@Autowired
-	GameTableService gameTableService;
-	
+
 	@PersistenceContext
 	EntityManager entityManager;
 	

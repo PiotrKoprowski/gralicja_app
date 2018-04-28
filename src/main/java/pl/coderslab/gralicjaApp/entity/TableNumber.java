@@ -4,33 +4,42 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "table_number")
 public class TableNumber {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-
-	private List<Date> begin = new ArrayList<>();
-
-	private List<Date> end = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "tableNumber")
-	private List<TableReservation> tableReservations = new ArrayList<>();
+	@Column
+    @ElementCollection(targetClass=Date.class)
+	private List<Date> beginning;
 
-	public TableNumber(List<Date> begin, List<Date> end, List<TableReservation> tableReservations) {
+	@Column
+    @ElementCollection(targetClass=Date.class)
+	private List<Date> ending;
+	
+	@OneToMany(mappedBy = "tableNumber", cascade = CascadeType.MERGE)
+	    private List<TableReservation> tableReservation = new ArrayList<>();
+	
+	public TableNumber() {
 		super();
-		this.begin = begin;
-		this.end = end;
-		this.tableReservations = tableReservations;
+	}
+
+	public TableNumber(List<Date> beginning, List<Date> ending, List<TableReservation> tableReservation) {
+		super();
+		this.beginning = beginning;
+		this.ending = ending;
+		this.tableReservation = tableReservation;
 	}
 
 	public long getId() {
@@ -41,28 +50,28 @@ public class TableNumber {
 		this.id = id;
 	}
 
-	public List<Date> getBegin() {
-		return begin;
+	public List<Date> getBeginning() {
+		return beginning;
 	}
 
-	public void setBegin(List<Date> begin) {
-		this.begin = begin;
+	public void setBeginning(List<Date> beginning) {
+		this.beginning = beginning;
 	}
 
-	public List<Date> getEnd() {
-		return end;
+	public List<Date> getEnding() {
+		return ending;
 	}
 
-	public void setEnd(List<Date> end) {
-		this.end = end;
+	public void setEnding(List<Date> ending) {
+		this.ending = ending;
 	}
 
-	public List<TableReservation> getTableReservations() {
-		return tableReservations;
+	public List<TableReservation> getTableReservation() {
+		return tableReservation;
 	}
 
-	public void setTableReservations(List<TableReservation> tableReservations) {
-		this.tableReservations = tableReservations;
+	public void setTableReservation(List<TableReservation> tableReservation) {
+		this.tableReservation = tableReservation;
 	}
 
 }

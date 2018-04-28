@@ -14,13 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name="game_tables")
 public class GameTable {
 
 	@Id
@@ -59,24 +58,31 @@ public class GameTable {
 	@OneToMany(cascade = CascadeType.MERGE)
 	@JoinColumn(name="id_userKnowingRules")
 	private List<UserKnowingRules> userKnowingRules = new ArrayList<>();
-
-
+	
+	@OneToOne(mappedBy = "gameTable",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+	private TableReservation tableReservation;
+	
 	public GameTable() {
 		super();
 	}
 
 	public GameTable(String tableName, BoardGame boardGame, int maxNumOfPlayers, int actualNumOfPlayers,
-			boolean familiarWithGame, String day, String startingHour, List<User> users, List<UserKnowingRules> userKnowingRules) {
+			boolean familiarWithGame, String day, String startingHour, int numberOfTable, List<User> users,
+			List<UserKnowingRules> userKnowingRules, TableReservation tableReservation) {
 		super();
 		this.tableName = tableName;
 		this.boardGame = boardGame;
 		this.maxNumOfPlayers = maxNumOfPlayers;
 		this.actualNumOfPlayers = actualNumOfPlayers;
+		this.familiarWithGame = familiarWithGame;
 		this.day = day;
 		this.startingHour = startingHour;
+		this.numberOfTable = numberOfTable;
 		this.users = users;
-		this.familiarWithGame = familiarWithGame;
 		this.userKnowingRules = userKnowingRules;
+		this.tableReservation = tableReservation;
 	}
 
 	public long getId() {
@@ -173,6 +179,14 @@ public class GameTable {
 
 	public void setUserKnowingRules(List<UserKnowingRules> userKnowingRules) {
 		this.userKnowingRules = userKnowingRules;
+	}
+
+	public TableReservation getTableReservation() {
+		return tableReservation;
+	}
+
+	public void setTableReservation(TableReservation tableReservation) {
+		this.tableReservation = tableReservation;
 	}
 
 }

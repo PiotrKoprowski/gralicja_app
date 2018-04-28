@@ -26,21 +26,12 @@ public class TableReservation {
 	@NotEmpty
 	private Date end;
 
-//	public static void main(String[] args) {
-//		Calendar cal = Calendar.getInstance();
-//		cal.set(2000, 1, 2, 9, 00, 00);
-//		Date d = cal.getTime();
-//
-//		System.out.println(d);
-//	}
-//
 	@ManyToOne
 	private TableNumber tableNumber;
 	
 	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gameTable_id")
     private GameTable gameTable;
-
 	
 	
 	public TableReservation() {

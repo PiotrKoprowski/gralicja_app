@@ -10,8 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class TableReservation {
@@ -20,10 +19,10 @@ public class TableReservation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@NotEmpty
+	@NotNull
 	private Date begin;
 
-	@NotEmpty
+	@NotNull
 	private Date end;
 
 	@ManyToOne

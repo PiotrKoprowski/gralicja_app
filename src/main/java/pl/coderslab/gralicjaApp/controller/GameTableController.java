@@ -80,7 +80,7 @@ public class GameTableController {
 		gameTable.getUserKnowingRules().add(userKR);
 		this.gameTableRepository.save(gameTable);
 		
-		//table resevation part
+		//table reservation part
 		
 		//data capture
 		String startingDayString = gameTable.getDay();
@@ -116,13 +116,13 @@ public class GameTableController {
 		endingCal.set(year, month, day, endingHour, endingMin, 00);
 		Date endingDate = startingCal.getTime();
 		reservation.setEnd(endingDate);
-//		this.tableReservationRepository.save(reservation);
+		this.tableReservationRepository.save(reservation);
 		
 		//finding table
 		//first reservation when there is no table added
-		if(tableNumberRepository.findOne((long) 0) == null) {
+		if(tableNumberRepository.findOne((long) 1) == null) {
 			TableNumber tableNumber = new TableNumber();
-			tableNumber.setId(0);
+			tableNumber.setId(1);
 			tableNumber.getBeginning().add(startingDate);
 			tableNumber.getEnding().add(endingDate);
 			tableNumber.getTableReservation().add(reservation);
@@ -133,119 +133,60 @@ public class GameTableController {
 		boolean breakCondition = true;
 		
 			while(breakCondition) {
-				for(long counter = 0; counter < numbersOfTableToReservation; counter++) {
+				for(long counter = 1; counter <= numbersOfTableToReservation; counter++) {
 					if(tableNumberRepository.findOne(counter) == null) {
 						TableNumber tableNumber = new TableNumber();
-						tableNumber.setId(0);
+						tableNumber.setId(counter);
 						tableNumber.getBeginning().add(startingDate);
 						tableNumber.getEnding().add(endingDate);
 						tableNumber.getTableReservation().add(reservation);
 						this.tableNumberRepository.save(tableNumber);
 					} else {
-					TableNumber tableNumber = tableNumberRepository.findOne(counter);
-					List<Date> beginnig = tableNumber.getBeginning();
-					List<Date> ending = tableNumber.getEnding();
+						TableNumber tableNumber = tableNumberRepository.findOne(counter);
+						List<Date> beginnig = tableNumber.getBeginning();
+						List<Date> ending = tableNumber.getEnding();
+						
+						
+						// have to check all reservation before and after (in particular table) before making new reservation
+						boolean beforeEvent = false; 
+						boolean afterEvent = false;
 					
-					boolean beforeEvent = false;
-					for(int i = 0; i < beginnig.size(); i++) {
-						if((beginnig.get(i).compareTo(endingDate)>0) && (beginnig.get(i).compareTo(startingDate)>0)) {
-							System.out.println("Nowe wydarzenie przed wydarzeniem");
-							beforeEvent = true;
-						}else {
-							beforeEvent = false;
+						for(int i = 0; i < beginnig.size(); i++) {
+							if((beginnig.get(i).compareTo(endingDate)>0) && (beginnig.get(i).compareTo(startingDate)>0)) {
+								beforeEvent = true;
+								afterEvent = false;
+							}else if((ending.get(i).compareTo(startingDate)<0) && (ending.get(i).compareTo(endingDate)<0)) {
+								beforeEvent = false;
+								afterEvent = true;
+							}else {
+								beforeEvent = false;
+								afterEvent = false;
+							}
 						}
-					}
-					//if beforeEvent = true the loop will stop increase tableNumber;
-					if(beforeEvent) {
-						break;
-					}
+						
+//						if beforeEvent = true the loop will stop increase tableNumber
+						if(beforeEvent) {
+							tableNumber.getBeginning().add(startingDate);
+							tableNumber.getEnding().add(endingDate);
+							tableNumber.getTableReservation().add(reservation);
+							this.tableNumberRepository.save(tableNumber);
+							System.out.println("Nowe wydarzenie przed wydarzeniem");
+							breakCondition = false; //stop while loop
+							break;
+						}else if(afterEvent) {
+							tableNumber.getBeginning().add(startingDate);
+							tableNumber.getEnding().add(endingDate);
+							tableNumber.getTableReservation().add(reservation);
+							this.tableNumberRepository.save(tableNumber);
+							System.out.println("Nowe wydarzenie po wydarzeniu");
+							breakCondition = false; //stop while loop
+							break;
+						}
 					}
 				
 				}
 			}
 		}
-		
-		
-		
-//		int year = 2000;
-//		int month = 0;
-//		
-//		Calendar cal = Calendar.getInstance();
-//		int startingDay = 1;
-//		int startingHour = 12;
-//		int startingMin = 15;
-//		cal.set(year, month, startingDay, startingHour, startingMin, 00);
-//		Date startingDate = cal.getTime();
-//		
-//		Calendar cal2 = Calendar.getInstance();
-//		int endingDay = 1;
-//		int endingHour = 15;
-//		int endingMin = 15;
-//		cal2.set(year, month, endingDay, endingHour, endingMin, 00);
-//		Date endingDate = cal2.getTime();
-//		
-//		Calendar calNewStarting = Calendar.getInstance();
-//		int startingDayNewStarting = 1;
-//		int startingHourNewStarting = 17;
-//		int startingMinNewStarting = 15;
-//		calNewStarting.set(year, month, startingDayNewStarting, startingHourNewStarting, startingMinNewStarting, 00);
-//		Date startingDateNewStarting = calNewStarting.getTime();
-//		
-//		Calendar cal2NewEnding = Calendar.getInstance();
-//		int endingDayNewEnding = 1;
-//		int endingHourNewEnding = 20;
-//		int endingMinNewEnding = 15;
-//		cal2NewEnding.set(year, month, endingDayNewEnding, endingHourNewEnding, endingMinNewEnding, 00);
-//		Date endingDateNewEnding = cal2NewEnding.getTime();
-//		
-//		if((startingDate.compareTo(endingDateNewEnding)>0) && (startingDate.compareTo(startingDateNewStarting)>0)) {
-//			System.out.println("Nowe wydarzenie przed wydarzeniem");
-//		}else if((endingDate.compareTo(startingDateNewStarting)<0) && (endingDate.compareTo(endingDateNewEnding)<0)) {
-//			System.out.println("Nowe wydarzeenie po wydarzeniu");
-//		}else {
-//			System.out.println("brak miejsca - nastepny stolik");
-//			// TODO increase date
-//		}
-//		
-//		
-//		public static void main(String[] args) {
-//			
-//			int year = 2000;
-//			int month = 0;
-//			int day = 1;
-//			int min = 00;
-//			
-//			Calendar cal = Calendar.getInstance();
-//			int startingHour = 12;
-//			cal.set(year, month, day, startingHour, min, 00);
-//			Date startingDate = cal.getTime();
-//			
-//			Calendar cal2 = Calendar.getInstance();
-//			int endingHour = 15;
-//			cal2.set(year, month, day, endingHour, min, 00);
-//			Date endingDate = cal2.getTime();
-//			
-//			Calendar calNewStarting = Calendar.getInstance();
-//			int startingHourNewStarting = 16;
-//			calNewStarting.set(year, month, day, startingHourNewStarting, min, 00);
-//			Date startingDateNewStarting = calNewStarting.getTime();
-//			
-//			Calendar cal2NewEnding = Calendar.getInstance();
-//			int endingHourNewEnding = 17;
-//			cal2NewEnding.set(year, month, day, endingHourNewEnding, min, 00);
-//			Date endingDateNewEnding = cal2NewEnding.getTime();
-//			
-//			
-//			if((startingDate.compareTo(endingDateNewEnding)>0) && (startingDate.compareTo(startingDateNewStarting)>0)) {
-//				System.out.println("Nowe wydarzenie przed wydarzeniem");
-//			}else if((endingDate.compareTo(startingDateNewStarting)<0) && (endingDate.compareTo(endingDateNewEnding)<0)) {
-//				System.out.println("Nowe wydarzeenie po wydarzeniu");
-//			}else {
-//				System.out.println("brak miejsca - nastepny stolik");
-//				// TODO increase date
-//			}
-//			
-//		}
 		
 		return "redirect:/";
 	}

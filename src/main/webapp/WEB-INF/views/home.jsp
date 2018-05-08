@@ -85,6 +85,8 @@
 			<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
 			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
 			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
+			<p>Rezerwacja stolika od godziny: <b>${gameTable.tableReservation.begin}</b></p>
+			<p>Rezerwacja stolika do godziny: <b>${gameTable.tableReservation.end}</b></p>
 			<p>Czy któryś z graczy zna zasady? 
 			<%
 				int knowingRules = 0;

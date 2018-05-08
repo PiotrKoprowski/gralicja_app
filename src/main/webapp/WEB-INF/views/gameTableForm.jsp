@@ -18,6 +18,7 @@
 	<div style="height: 50px"></div>
 
 	<div class="w3-row-padding ">
+<div><h1>${alert}</h1></div>
 <div class="w3-half">
 <div class="w3-card white">
 <br>

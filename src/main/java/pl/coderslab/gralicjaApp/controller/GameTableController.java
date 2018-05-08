@@ -66,7 +66,7 @@ public class GameTableController {
 	}
 	
 	@PostMapping("/add")
-	public String addPost(@Valid @ModelAttribute GameTable gameTable, BindingResult br, HttpSession session, Principal principal) {
+	public String addPost(@Valid @ModelAttribute GameTable gameTable, BindingResult br, Model m, Principal principal) {
 		if(br.hasErrors()) {
 			return "gameTableForm";
 		}
@@ -86,9 +86,9 @@ public class GameTableController {
 		String startingDayString = gameTable.getDay();
 		int startingDay;
 		if(startingDayString.equals("Sobota")) {
-			startingDay = 0;
-		} else {
 			startingDay = 1;
+		} else {
+			startingDay = 2;
 		}
 		
 		String startingHours = gameTable.getStartingHour();
@@ -99,7 +99,7 @@ public class GameTableController {
 		int year = 2000;
 		int month = 0;
 		int day = startingDay;
-		Double endingHourDouble = Math.ceil(gameTable.getBoardGame().getGameLength()); //round up gameLength to full hour
+		Double endingHourDouble = Math.ceil(gameTable.getBoardGame().getGameLength() * 1.5); //multiply gameLenth and round up to full hour
 		int endingHour = startingHour + endingHourDouble.intValue(); //setting ending hour as a starting hour + rounded gameLenth
 		int endingMin = startingMin; //no need to change min if hour is rounding
 		
@@ -114,7 +114,7 @@ public class GameTableController {
 		
 		Calendar endingCal = Calendar.getInstance();
 		endingCal.set(year, month, day, endingHour, endingMin, 00);
-		Date endingDate = startingCal.getTime();
+		Date endingDate = endingCal.getTime();
 		reservation.setEnd(endingDate);
 		this.tableReservationRepository.save(reservation);
 		
@@ -122,28 +122,51 @@ public class GameTableController {
 		//first reservation when there is no table added
 		if(tableNumberRepository.findOne((long) 1) == null) {
 			TableNumber tableNumber = new TableNumber();
-			tableNumber.setId(1);
-			tableNumber.getBeginning().add(startingDate);
-			tableNumber.getEnding().add(endingDate);
+			
+			List<Date> beginning = new ArrayList<>();
+			beginning.add(startingDate);
+			tableNumber.setBeginning(beginning);
+			List<Date> ending = new ArrayList<>();
+			ending.add(endingDate);
+			tableNumber.setEnding(ending);
+
 			tableNumber.getTableReservation().add(reservation);
 			this.tableNumberRepository.save(tableNumber);
+			gameTable.setNumberOfTable( (int) tableNumber.getId());
+			this.gameTableRepository.save(gameTable);
+			
 		} else {
 		//searching empty place to make reservation
-		long numbersOfTableToReservation = 5; //setting max number of tables which could be created
+		long numbersOfTableToReservation = 3; //setting max number of tables which could be created
 		boolean breakCondition = true;
 		
 			while(breakCondition) {
-				for(long counter = 1; counter <= numbersOfTableToReservation; counter++) {
-					if(tableNumberRepository.findOne(counter) == null) {
+				for(long counter = 1; counter <= numbersOfTableToReservation + 1; counter++) {
+					if(counter == numbersOfTableToReservation + 1) {
+						this.tableReservationRepository.delete(reservation);
+						this.gameTableRepository.delete(gameTable);
+						m.addAttribute("alert", "Przepraszamy nie ma wolnych stolików w tym terminie, wybierz inny termin");
+						return "gameTableForm";
+					} else if(tableNumberRepository.findOne(counter) == null) {
 						TableNumber tableNumber = new TableNumber();
-						tableNumber.setId(counter);
-						tableNumber.getBeginning().add(startingDate);
-						tableNumber.getEnding().add(endingDate);
+						
+						List<Date> beginning = new ArrayList<>();
+						beginning.add(startingDate);
+						tableNumber.setBeginning(beginning);
+						List<Date> ending = new ArrayList<>();
+						ending.add(endingDate);
+						tableNumber.setEnding(ending);
+
 						tableNumber.getTableReservation().add(reservation);
 						this.tableNumberRepository.save(tableNumber);
+						gameTable.setNumberOfTable( (int) tableNumber.getId());
+						this.gameTableRepository.save(gameTable);
+						breakCondition = false; //stop while loop
+						break;
+						
 					} else {
 						TableNumber tableNumber = tableNumberRepository.findOne(counter);
-						List<Date> beginnig = tableNumber.getBeginning();
+						List<Date> beginning = tableNumber.getBeginning();
 						List<Date> ending = tableNumber.getEnding();
 						
 						
@@ -151,11 +174,11 @@ public class GameTableController {
 						boolean beforeEvent = false; 
 						boolean afterEvent = false;
 					
-						for(int i = 0; i < beginnig.size(); i++) {
-							if((beginnig.get(i).compareTo(endingDate)>0) && (beginnig.get(i).compareTo(startingDate)>0)) {
+						for(int i = 0; i < beginning.size(); i++) {
+							if((beginning.get(i).compareTo(endingDate)>=0) && (beginning.get(i).compareTo(startingDate)>=0)) {
 								beforeEvent = true;
 								afterEvent = false;
-							}else if((ending.get(i).compareTo(startingDate)<0) && (ending.get(i).compareTo(endingDate)<0)) {
+							}else if((ending.get(i).compareTo(startingDate)<=0) && (ending.get(i).compareTo(endingDate)<=0)) {
 								beforeEvent = false;
 								afterEvent = true;
 							}else {
@@ -166,24 +189,31 @@ public class GameTableController {
 						
 //						if beforeEvent = true the loop will stop increase tableNumber
 						if(beforeEvent) {
-							tableNumber.getBeginning().add(startingDate);
-							tableNumber.getEnding().add(endingDate);
+							beginning.add(startingDate);
+							tableNumber.setBeginning(beginning);
+							ending.add(endingDate);
+							tableNumber.setEnding(ending);
+
 							tableNumber.getTableReservation().add(reservation);
 							this.tableNumberRepository.save(tableNumber);
-							System.out.println("Nowe wydarzenie przed wydarzeniem");
+							gameTable.setNumberOfTable( (int) tableNumber.getId());
+							this.gameTableRepository.save(gameTable);
 							breakCondition = false; //stop while loop
 							break;
 						}else if(afterEvent) {
-							tableNumber.getBeginning().add(startingDate);
-							tableNumber.getEnding().add(endingDate);
+							beginning.add(startingDate);
+							tableNumber.setBeginning(beginning);
+							ending.add(endingDate);
+							tableNumber.setEnding(ending);
+
 							tableNumber.getTableReservation().add(reservation);
 							this.tableNumberRepository.save(tableNumber);
-							System.out.println("Nowe wydarzenie po wydarzeniu");
+							gameTable.setNumberOfTable( (int) tableNumber.getId());
+							this.gameTableRepository.save(gameTable);
 							breakCondition = false; //stop while loop
 							break;
 						}
 					}
-				
 				}
 			}
 		}
@@ -220,6 +250,22 @@ public class GameTableController {
 			}
 		}	
 		if(gameTable.getUsers().size()==0) {
+			long tableNumberId = gameTable.getTableReservation().getTableNumber().getId(); //finding tableNumberId
+			TableNumber tableNumber = this.tableNumberRepository.findOne(tableNumberId);
+			List<Date> beginning = tableNumber.getBeginning();
+			beginning.remove(gameTable.getTableReservation().getBegin()); //removing beginning date from tableNumber
+			tableNumber.setBeginning(beginning);
+			
+			List<Date> ending = tableNumber.getEnding();
+			ending.remove(gameTable.getTableReservation().getEnd()); //removing ending date from tableNumber
+			tableNumber.setEnding(ending);
+			
+			List<TableReservation> tableReservation = tableNumber.getTableReservation();
+			tableReservation.remove(gameTable.getTableReservation()); //removing reservation from tableNumber
+			tableNumber.setTableReservation(tableReservation);
+			
+			this.tableNumberRepository.save(tableNumber);
+			this.tableReservationRepository.delete(gameTable.getTableReservation());
 			this.gameTableRepository.delete(gameTable);
 		} else {
 			gameTable.setActualNumOfPlayers(gameTable.getUsers().size());

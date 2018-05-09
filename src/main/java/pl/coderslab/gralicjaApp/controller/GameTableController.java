@@ -132,6 +132,10 @@ public class GameTableController {
 
 			tableNumber.getTableReservation().add(reservation);
 			this.tableNumberRepository.save(tableNumber);
+			
+			reservation.setTableNumber(tableNumber);
+			this.tableReservationRepository.save(reservation);
+			
 			gameTable.setNumberOfTable( (int) tableNumber.getId());
 			this.gameTableRepository.save(gameTable);
 			
@@ -145,6 +149,7 @@ public class GameTableController {
 					if(counter == numbersOfTableToReservation + 1) {
 						this.tableReservationRepository.delete(reservation);
 						this.gameTableRepository.delete(gameTable);
+						this.userKnowingRulesRepository.delete(userKR);
 						m.addAttribute("alert", "Przepraszamy nie ma wolnych stolików w tym terminie, wybierz inny termin");
 						return "gameTableForm";
 					} else if(tableNumberRepository.findOne(counter) == null) {
@@ -159,6 +164,10 @@ public class GameTableController {
 
 						tableNumber.getTableReservation().add(reservation);
 						this.tableNumberRepository.save(tableNumber);
+						
+						reservation.setTableNumber(tableNumber);
+						this.tableReservationRepository.save(reservation);
+						
 						gameTable.setNumberOfTable( (int) tableNumber.getId());
 						this.gameTableRepository.save(gameTable);
 						breakCondition = false; //stop while loop
@@ -196,6 +205,10 @@ public class GameTableController {
 
 							tableNumber.getTableReservation().add(reservation);
 							this.tableNumberRepository.save(tableNumber);
+							
+							reservation.setTableNumber(tableNumber);
+							this.tableReservationRepository.save(reservation);
+							
 							gameTable.setNumberOfTable( (int) tableNumber.getId());
 							this.gameTableRepository.save(gameTable);
 							breakCondition = false; //stop while loop
@@ -208,6 +221,26 @@ public class GameTableController {
 
 							tableNumber.getTableReservation().add(reservation);
 							this.tableNumberRepository.save(tableNumber);
+							
+							reservation.setTableNumber(tableNumber);
+							this.tableReservationRepository.save(reservation);
+							
+							gameTable.setNumberOfTable( (int) tableNumber.getId());
+							this.gameTableRepository.save(gameTable);
+							breakCondition = false; //stop while loop
+							break;
+						}else if(beginning.size() == 0) { //case when tableNumber was created but reservation was removed and it is created but empty
+							beginning.add(startingDate);
+							tableNumber.setBeginning(beginning);
+							ending.add(endingDate);
+							tableNumber.setEnding(ending);
+
+							tableNumber.getTableReservation().add(reservation);
+							this.tableNumberRepository.save(tableNumber);
+							
+							reservation.setTableNumber(tableNumber);
+							this.tableReservationRepository.save(reservation);
+							
 							gameTable.setNumberOfTable( (int) tableNumber.getId());
 							this.gameTableRepository.save(gameTable);
 							breakCondition = false; //stop while loop
@@ -246,7 +279,10 @@ public class GameTableController {
 		for (UserKnowingRules userKnowingRules : usersKnowingRulesList) {
 			if(userKnowingRules.getUser().getUsername().equals(username)) {
 				userKnowingRulesId = userKnowingRules.getId();
-				gameTable.getUserKnowingRules().remove(userKnowingRules);
+				usersKnowingRulesList.remove(userKnowingRules);
+				gameTable.setUserKnowingRules(usersKnowingRulesList);
+				this.gameTableRepository.save(gameTable);
+				break;
 			}
 		}	
 		if(gameTable.getUsers().size()==0) {

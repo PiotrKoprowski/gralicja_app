@@ -1,6 +1,7 @@
 package pl.coderslab.gralicjaApp.model;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -14,6 +15,7 @@ public class UserDTO {
 	
     @NotNull
     @NotEmpty
+    @Size(min=6)
     private String password;
     private String matchingPassword;
      

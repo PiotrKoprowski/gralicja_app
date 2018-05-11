@@ -40,10 +40,12 @@
 <div class="w3-row-padding ">
 <h1 class="w3-center">Lista gier</h1>
 
-<button onclick="location.href='${pageContext.request.contextPath}/boardGames/add'" class="w3-padding-16 w3-red w3-button w3-block w3-left-align">Dodaj grę</button>
+
+<button onclick="location.href='${pageContext.request.contextPath}/boardGames/add'" class="w3-padding-16 w3-green w3-button w3-block w3-left-align">Dodaj grę</button>
 
 	<c:forEach items="${boardGameList}" var="boardGame">
-		<button onclick="myAccFunc('gra${boardGame.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${boardGame.title} | ${boardGame.category}</button>
+		<button onclick="myAccFunc('gra${boardGame.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align w3-threequarter">${boardGame.title} | ${boardGame.category}</button>
+		<a href="${pageContext.request.contextPath}/gameTables/add/${boardGame.id}" class="w3-btn w3-padding-16 w3-red w3-button w3-block w3-center w3-quarter" style="text-decoration:none">Załóż stolik</a>
 		<div id="gra${boardGame.id}" class="w3-hide w3-container">
 		<p>Wydawca: <b>${boardGame.publisher}</b></p>
 		<p>Maksymalna liczba graczy: <b>${boardGame.maxNumOfPlayers}</b></p>
@@ -55,6 +57,7 @@
 			<p>${boardGame.description}</p>
 			</div>
 		</div>
+		<hr></hr>
 	</c:forEach>
 </div>
 <hr>

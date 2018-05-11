@@ -27,21 +27,16 @@
 		<form:form class="w3-container w3-card-4" modelAttribute="gameTable"
 			method="post">
 			<div class="w3-section">
+				<h3>Nazwa gry : <b>${boarGameTitle}</b></h3>
+			</div>
+			<div class="w3-section">
 				<form:label path="tableName">Nazwa stolika</form:label>
 				<form:input class="w3-input" type="text" path="tableName"/>
 				<form:errors path="tableName"></form:errors>
 			</div>
 			<div class="w3-section">
-				<form:label path="boardGame.id">Gra</form:label>
-				<form:select class="w3-input" path="boardGame">
-					<form:option value="${games}">Wybierz gre</form:option>
-					<form:options items="${games}" itemValue="id" itemLabel="title"></form:options>
-				</form:select>
-				<form:errors path="boardGame"></form:errors>
-			</div>
-			<div class="w3-section">
-				<form:label path="maxNumOfPlayers">Liczba graczy</form:label>
-				<form:input class="w3-input" path="maxNumOfPlayers" type="number" />
+				<form:label path="maxNumOfPlayers">Liczba graczy (od ${minPlayers} do ${maxPlayers})</form:label>
+				<form:input class="w3-input" path="maxNumOfPlayers" type="number" min="${minPlayers}" max="${maxPlayers}" />
 				<form:errors path="maxNumOfPlayers"></form:errors>
 			</div>
 			<div class="w3-section">

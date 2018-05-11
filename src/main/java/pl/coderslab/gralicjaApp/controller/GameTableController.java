@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -59,17 +60,26 @@ public class GameTableController {
 	@PersistenceContext
 	EntityManager entityManager;
 	
-	@GetMapping("/add")
-	public String add(Model m) {
-		m.addAttribute("gameTable", new GameTable());
+	@GetMapping("/add/{boardGameId}")
+	public String add(Model m, @PathVariable long boardGameId) {
+		GameTable gameTable = new GameTable();
+		BoardGame boardGame = boardGameRepository.findOne(boardGameId);
+		int minPlayers = boardGame.getMinNumOfPlayers();
+		int maxPlayers = boardGame.getMaxNumOfPlayers();
+		String boarGameTitle = boardGame.getTitle();
+		m.addAttribute("gameTable", gameTable);
+		m.addAttribute("minPlayers", minPlayers);
+		m.addAttribute("maxPlayers", maxPlayers);
+		m.addAttribute("boarGameTitle", boarGameTitle);
 		return "gameTableForm";
 	}
 	
-	@PostMapping("/add")
-	public String addPost(@Valid @ModelAttribute GameTable gameTable, BindingResult br, Model m, Principal principal) {
+	@PostMapping("/add/{boardGameId}")
+	public String addPost(@Valid @ModelAttribute GameTable gameTable, BindingResult br, Model m, Principal principal, @PathVariable long boardGameId) {
 		if(br.hasErrors()) {
 			return "gameTableForm";
 		}
+//		GameTable gameTable = new GameTable();
 		String name = principal.getName();	
 		User u = userRepository.findByUsername(name);
 		gameTable.getUsers().add(u);
@@ -78,8 +88,16 @@ public class GameTableController {
 		UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
 		this.userKnowingRulesRepository.save(userKR);
 		gameTable.getUserKnowingRules().add(userKR);
-		this.gameTableRepository.save(gameTable);
+		BoardGame boardGame = boardGameRepository.findOne(boardGameId);
+		gameTable.setBoardGame(boardGame);
 		
+		try {
+			this.gameTableRepository.save(gameTable);
+	    }
+	    catch (DataIntegrityViolationException e) {
+	    	m.addAttribute("alert", "Stolik o takiej nazwie już istenieje podaj inną nazwę");
+	    	return "gameTableForm";
+	    }
 		//table reservation part
 		
 		//data capture
@@ -117,6 +135,8 @@ public class GameTableController {
 		Date endingDate = endingCal.getTime();
 		reservation.setEnd(endingDate);
 		this.tableReservationRepository.save(reservation);
+		
+		gameTable.setTableReservation(reservation);
 		
 		//finding table
 		//first reservation when there is no table added

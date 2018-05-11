@@ -2,12 +2,12 @@ package pl.coderslab.gralicjaApp.entity;
 
 import java.util.Collection;
 
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Size;
 
 import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -19,16 +19,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @Column(unique=true)
     private String username;
     
-    @Column(unique=true)
     private String email;
+    
+    @Size(min=6)
     private String password;
     private boolean enabled;
     private String secret;
 
-    //
 
     @ElementCollection // Also relation to new entity Role can be used
     private Collection<String> roles;

@@ -45,7 +45,7 @@ public class GameTable {
 	@NotEmpty
 	private String day;
 
-	@NotNull
+	@NotEmpty
 	private String startingHour;
 
 	private int numberOfTable;

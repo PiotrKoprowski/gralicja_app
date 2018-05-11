@@ -73,7 +73,7 @@
 <div class="w3-row-padding">
 <h2 class="w3-center" id="tableList">Lista stolików z grami</h2>
 
-<a href="${pageContext.request.contextPath}/gameTables/add" class="w3-padding-16 w3-red w3-button w3-block w3-left-align" style="text-decoration:none">Załóż stolik</a>
+<a href="${pageContext.request.contextPath}/boardGames/show" class="w3-padding-16 w3-red w3-button w3-block w3-left-align" style="text-decoration:none">Załóż stolik</a>
 
 <%-- Joined tables --%>
 <div class="w3-padding-16 w3-white w3-button w3-block w3-left-align w3-hover-white">Stoliki w których jestem dodany</div>

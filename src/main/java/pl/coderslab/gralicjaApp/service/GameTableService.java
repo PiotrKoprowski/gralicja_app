@@ -51,6 +51,19 @@ public class GameTableService {
 	@PersistenceContext
 	EntityManager entityManager;
 	
+	public String addGameTableGet(Model m, long boardGameId) {
+		GameTable gameTable = new GameTable();
+		BoardGame boardGame = boardGameRepository.findOne(boardGameId);
+		int minPlayers = boardGame.getMinNumOfPlayers();
+		int maxPlayers = boardGame.getMaxNumOfPlayers();
+		String boarGameTitle = boardGame.getTitle();
+		m.addAttribute("gameTable", gameTable);
+		m.addAttribute("minPlayers", minPlayers);
+		m.addAttribute("maxPlayers", maxPlayers);
+		m.addAttribute("boarGameTitle", boarGameTitle);
+		return "gameTableForm";
+	}
+	
 	public String addGameTable(GameTable gameTable, Model m, Principal principal, long boardGameId) {
 	String name = principal.getName();	
 	User u = userRepository.findByUsername(name);
@@ -242,7 +255,61 @@ public class GameTableService {
 			}
 		}
 	}
-	
 	return "redirect:/";
+	}
+	
+	public String addToTable(long tableId, String username, String rules) {
+		GameTable gameTable = gameTableRepository.findOne(tableId);
+		User u = userRepository.findByUsername(username);
+		gameTable.getUsers().add(u);
+		gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
+		boolean knowingRules = Boolean.parseBoolean(rules);
+		UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
+		this.userKnowingRulesRepository.save(userKR);
+		gameTable.getUserKnowingRules().add(userKR);
+		this.gameTableRepository.save(gameTable);	
+	    return "redirect:/";
+	}
+	
+	public String deleteFromTable(long tableId, String username) {
+		GameTable gameTable = gameTableRepository.findOne(tableId);
+		User u = userRepository.findByUsername(username);
+		gameTable.getUsers().remove(u);
+		// finding userKnowingRules id
+		long userKnowingRulesId = 0;
+		List<UserKnowingRules> usersKnowingRulesList = gameTable.getUserKnowingRules();
+		for (UserKnowingRules userKnowingRules : usersKnowingRulesList) {
+			if(userKnowingRules.getUser().getUsername().equals(username)) {
+				userKnowingRulesId = userKnowingRules.getId();
+				usersKnowingRulesList.remove(userKnowingRules);
+				gameTable.setUserKnowingRules(usersKnowingRulesList);
+				this.gameTableRepository.save(gameTable);
+				break;
+			}
+		}	
+		if(gameTable.getUsers().size()==0) {
+			long tableNumberId = gameTable.getTableReservation().getTableNumber().getId(); //finding tableNumberId
+			TableNumber tableNumber = this.tableNumberRepository.findOne(tableNumberId);
+			List<Date> beginning = tableNumber.getBeginning();
+			beginning.remove(gameTable.getTableReservation().getBegin()); //removing beginning date from tableNumber
+			tableNumber.setBeginning(beginning);
+			
+			List<Date> ending = tableNumber.getEnding();
+			ending.remove(gameTable.getTableReservation().getEnd()); //removing ending date from tableNumber
+			tableNumber.setEnding(ending);
+			
+			List<TableReservation> tableReservation = tableNumber.getTableReservation();
+			tableReservation.remove(gameTable.getTableReservation()); //removing reservation from tableNumber
+			tableNumber.setTableReservation(tableReservation);
+			
+			this.tableNumberRepository.save(tableNumber);
+			this.tableReservationRepository.delete(gameTable.getTableReservation());
+			this.gameTableRepository.delete(gameTable);
+		} else {
+			gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
+			this.gameTableRepository.save(gameTable);
+		}
+		this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(userKnowingRulesId));
+	    return "redirect:/";
 	}
 }

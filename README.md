@@ -9,7 +9,7 @@ The application allows:
 2. Adding a board game,
 3. Setting up a table with a board game,
 4. Automatic reservation of the available table,
-5. Attaching and leaving a selected table,
+5. Joining and leaving a selected table,
 
 Plan for further development of the application:
 1. Adding a chat / comments to the table,

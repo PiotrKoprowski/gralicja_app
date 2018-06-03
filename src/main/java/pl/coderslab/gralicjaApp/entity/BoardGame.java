@@ -37,8 +37,10 @@ public class BoardGame {
 	@Max(30)
 	private int maxNumOfPlayers;
 	
-	@NotEmpty
-	private String ageRange;
+	@NotNull
+	private int minPlayerAge;
+
+	private int maxPlayerAge;
 	
 	@NotNull
 	private double gameLength;
@@ -48,7 +50,7 @@ public class BoardGame {
 	}
 
 	public BoardGame(String title, String description, String category, String publisher, int minNumOfPlayers,
-			int maxNumOfPlayers, String ageRange, double gameLength) {
+			int maxNumOfPlayers, int minPlayerAge, int maxPlayerAge, double gameLength) {
 		super();
 		this.title = title;
 		this.description = description;
@@ -56,7 +58,8 @@ public class BoardGame {
 		this.publisher = publisher;
 		this.minNumOfPlayers = minNumOfPlayers;
 		this.maxNumOfPlayers = maxNumOfPlayers;
-		this.ageRange = ageRange;
+		this.minPlayerAge = minPlayerAge;
+		this.maxPlayerAge = maxPlayerAge;
 		this.gameLength = gameLength;
 	}
 
@@ -116,14 +119,6 @@ public class BoardGame {
 		this.maxNumOfPlayers = maxNumOfPlayers;
 	}
 
-	public String getAgeRange() {
-		return ageRange;
-	}
-
-	public void setAgeRange(String ageRange) {
-		this.ageRange = ageRange;
-	}
-
 	public double getGameLength() {
 		return gameLength;
 	}
@@ -131,4 +126,21 @@ public class BoardGame {
 	public void setGameLength(double gameLength) {
 		this.gameLength = gameLength;
 	}
+
+	public int getMinPlayerAge() {
+		return minPlayerAge;
+	}
+
+	public void setMinPlayerAge(int minPlayerAge) {
+		this.minPlayerAge = minPlayerAge;
+	}
+
+	public int getMaxPlayerAge() {
+		return maxPlayerAge;
+	}
+
+	public void setMaxPlayerAge(int maxPlayerAge) {
+		this.maxPlayerAge = maxPlayerAge;
+	}
+	
 }

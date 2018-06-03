@@ -54,13 +54,8 @@ public class GameTableService {
 	public String addGameTableGet(Model m, long boardGameId) {
 		GameTable gameTable = new GameTable();
 		BoardGame boardGame = boardGameRepository.findOne(boardGameId);
-		int minPlayers = boardGame.getMinNumOfPlayers();
-		int maxPlayers = boardGame.getMaxNumOfPlayers();
-		String boarGameTitle = boardGame.getTitle();
 		m.addAttribute("gameTable", gameTable);
-		m.addAttribute("minPlayers", minPlayers);
-		m.addAttribute("maxPlayers", maxPlayers);
-		m.addAttribute("boarGameTitle", boarGameTitle);
+		m.addAttribute("boardGame", boardGame);
 		return "gameTableForm";
 	}
 	
@@ -68,7 +63,7 @@ public class GameTableService {
 	String name = principal.getName();	
 	User u = userRepository.findByUsername(name);
 	gameTable.getUsers().add(u);
-	gameTable.setActualNumOfPlayers(1);
+	gameTable.setCurrentNumOfPlayers(1);
 	boolean knowingRules = gameTable.isFamiliarWithGame();
 	UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
 	this.userKnowingRulesRepository.save(userKR);
@@ -262,7 +257,7 @@ public class GameTableService {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
 		gameTable.getUsers().add(u);
-		gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
+		gameTable.setCurrentNumOfPlayers(gameTable.getUsers().size());
 		boolean knowingRules = Boolean.parseBoolean(rules);
 		UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
 		this.userKnowingRulesRepository.save(userKR);
@@ -306,7 +301,7 @@ public class GameTableService {
 			this.tableReservationRepository.delete(gameTable.getTableReservation());
 			this.gameTableRepository.delete(gameTable);
 		} else {
-			gameTable.setActualNumOfPlayers(gameTable.getUsers().size());
+			gameTable.setCurrentNumOfPlayers(gameTable.getUsers().size());
 			this.gameTableRepository.save(gameTable);
 		}
 		this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(userKnowingRulesId));

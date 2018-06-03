@@ -83,7 +83,7 @@
 			<button onclick="myAccFunc('stolik${gameTable.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${gameTable.boardGame.title} | ${gameTable.day} | ${gameTable.startingHour} | ${gameTable.tableName}</button>
 			<div id="stolik${gameTable.id}" class="w3-hide w3-container">
 			<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
-			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
+			<p>Aktualna liczba graczy: <b>${gameTable.currentNumOfPlayers}</b></p>
 			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
 			<p>Rezerwacja stolika od godziny: <b>${gameTable.tableReservation.begin}</b></p>
 			<p>Rezerwacja stolika do godziny: <b>${gameTable.tableReservation.end}</b></p>
@@ -131,7 +131,7 @@
 					<a href="${pageContext.request.contextPath}/gameTables/deleteFromTable/${gameTable.id}/${principal.username}" class="w3-btn w3-red" style="text-decoration:none">Odejdź ze stolika</a>
 								
 				<%-- Information about full table --%>
-				<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
+				<c:if test="${gameTable.currentNumOfPlayers == gameTable.maxNumOfPlayers}">
 					<p id="przycisk${gameTable.id}${principal.username}" class="w3-btn w3-blue">Stolik jest pełny!</p>
 				</c:if>
 			</div>
@@ -150,7 +150,7 @@
 				int loggedInUser = 0;
 				pageContext.setAttribute("loggedInUser", loggedInUser);
 			%>
-			<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
+			<c:if test="${gameTable.currentNumOfPlayers == gameTable.maxNumOfPlayers}">
 				<%
 					loggedInUser = 1;
 					pageContext.setAttribute("loggedInUser", loggedInUser);
@@ -168,7 +168,7 @@
 		<button onclick="myAccFunc('stolik${gameTable.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${gameTable.boardGame.title} | ${gameTable.day} | ${gameTable.startingHour} | ${gameTable.tableName}</button>
 			<div id="stolik${gameTable.id}" class="w3-hide w3-container">
 			<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
-			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
+			<p>Aktualna liczba graczy: <b>${gameTable.currentNumOfPlayers}</b></p>
 			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
 			<p>Czy któryś z graczy zna zasady? 
 			<%
@@ -232,7 +232,7 @@
 				int loggedInUser = 0;
 				pageContext.setAttribute("loggedInUser", loggedInUser);
 			%>
-			<c:if test="${gameTable.actualNumOfPlayers < gameTable.maxNumOfPlayers}">
+			<c:if test="${gameTable.currentNumOfPlayers < gameTable.maxNumOfPlayers}">
 				<%
 					loggedInUser = 1;
 					pageContext.setAttribute("loggedInUser", loggedInUser);
@@ -250,7 +250,7 @@
 		<button onclick="myAccFunc('stolik${gameTable.id}')" class="w3-padding-16 w3-theme w3-button w3-block w3-left-align">${gameTable.boardGame.title} | ${gameTable.day} | ${gameTable.startingHour} | ${gameTable.tableName}</button>
 			<div id="stolik${gameTable.id}" class="w3-hide w3-container">
 			<p>Maksymalna liczba graczy: <b>${gameTable.maxNumOfPlayers}</b></p>
-			<p>Aktualna liczba graczy: <b>${gameTable.actualNumOfPlayers}</b></p>
+			<p>Aktualna liczba graczy: <b>${gameTable.currentNumOfPlayers}</b></p>
 			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
 			<div>
 			<div class="w3-container">
@@ -266,7 +266,7 @@
 				<br>
 				
 				<%-- Information about full table --%>
-				<c:if test="${gameTable.actualNumOfPlayers == gameTable.maxNumOfPlayers}">
+				<c:if test="${gameTable.currentNumOfPlayers == gameTable.maxNumOfPlayers}">
 					<p id="przycisk${gameTable.id}${principal.username}" class="w3-btn w3-blue">Stolik jest pełny!</p>
 				</c:if>
 			</div>

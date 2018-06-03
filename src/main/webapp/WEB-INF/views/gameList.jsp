@@ -50,7 +50,8 @@
 		<p>Wydawca: <b>${boardGame.publisher}</b></p>
 		<p>Maksymalna liczba graczy: <b>${boardGame.maxNumOfPlayers}</b></p>
 		<p>Minimalna liczba graczy: <b>${boardGame.minNumOfPlayers}</b></p>
-		<p>Przedział wiekowy: <b>${boardGame.ageRange}</b></p>
+		<p>Minimalny wiek gracza: <b>${boardGame.minPlayerAge}</b></p>
+		<p>Maksymalny wiek gracza: <b>${boardGame.maxPlayerAge}</b></p>
 		<p>Długość rozgrywki: <b>${boardGame.gameLength}</b></p>
 		<button onclick="myAccFunc('opis${boardGame.id}')" class="w3-padding-16  w3-light-blue w3-button w3-block w3-left-align ">Opis gry</button>
 			<div id="opis${boardGame.id}" class="w3-hide w3-container w3-light-blue">

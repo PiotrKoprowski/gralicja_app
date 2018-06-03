@@ -61,9 +61,14 @@
 				<form:errors path="maxNumOfPlayers"></form:errors>
 			</div>
 			<div class="w3-section">
-				<form:label path="ageRange">Przedział wiekowy</form:label>
-				<form:input class="w3-input" path="ageRange" />
-				<form:errors path="ageRange"></form:errors>
+				<form:label path="minPlayerAge">Minimalny wiek gracza</form:label>
+				<form:input class="w3-input" path="minPlayerAge" />
+				<form:errors path="minPlayerAge"></form:errors>
+			</div>
+			<div class="w3-section">
+				<form:label path="maxPlayerAge">Maksymalny wiek gracza</form:label>
+				<form:input class="w3-input" path="maxPlayerAge" />
+				<form:errors path="maxPlayerAge"></form:errors>
 			</div>
 			<div class="w3-section">
 				<form:label path="gameLength">Długość rozgrywki</form:label>

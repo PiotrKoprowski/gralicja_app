@@ -38,7 +38,7 @@ public class GameTable {
 	private int maxNumOfPlayers;
 
 	@NotNull
-	private int actualNumOfPlayers;
+	private int currentNumOfPlayers;
 
 	private boolean familiarWithGame;
 
@@ -68,14 +68,14 @@ public class GameTable {
 		super();
 	}
 
-	public GameTable(String tableName, BoardGame boardGame, int maxNumOfPlayers, int actualNumOfPlayers,
+	public GameTable(String tableName, BoardGame boardGame, int maxNumOfPlayers, int currentNumOfPlayers,
 			boolean familiarWithGame, String day, String startingHour, int numberOfTable, List<User> users,
 			List<UserKnowingRules> userKnowingRules, TableReservation tableReservation) {
 		super();
 		this.tableName = tableName;
 		this.boardGame = boardGame;
 		this.maxNumOfPlayers = maxNumOfPlayers;
-		this.actualNumOfPlayers = actualNumOfPlayers;
+		this.currentNumOfPlayers = currentNumOfPlayers;
 		this.familiarWithGame = familiarWithGame;
 		this.day = day;
 		this.startingHour = startingHour;
@@ -117,12 +117,12 @@ public class GameTable {
 		this.maxNumOfPlayers = maxNumOfPlayers;
 	}
 
-	public int getActualNumOfPlayers() {
-		return actualNumOfPlayers;
+	public int getCurrentNumOfPlayers() {
+		return currentNumOfPlayers;
 	}
 
-	public void setActualNumOfPlayers(int actualNumOfPlayers) {
-		this.actualNumOfPlayers = actualNumOfPlayers;
+	public void setCurrentNumOfPlayers(int currentNumOfPlayers) {
+		this.currentNumOfPlayers = currentNumOfPlayers;
 	}
 
 	public boolean isFamiliarWithGame() {

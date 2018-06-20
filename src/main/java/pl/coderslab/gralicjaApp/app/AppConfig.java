@@ -29,7 +29,6 @@ import pl.coderslab.converter.BoardGameConverter;
 import pl.coderslab.converter.GameTableConverter;
 import pl.coderslab.converter.TableNumberConverter;
 import pl.coderslab.converter.TableReservationConverter;
-import pl.coderslab.converter.UserKnowingRulesConverter;
 
 @Configuration
 @EnableWebMvc
@@ -81,7 +80,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		super.addFormatters(registry);
 		registry.addConverter( getBoardGameConverter() );
 		registry.addConverter( getGameTableConverter() );
-		registry.addConverter( getUserKnowingRulesConverter() );
 		registry.addConverter( getTableNumberConverter() );
 		registry.addConverter( getTableReservationConverter() );
 	}
@@ -94,11 +92,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public GameTableConverter getGameTableConverter() {
 		return new GameTableConverter();
-	}
-	
-	@Bean
-	public UserKnowingRulesConverter getUserKnowingRulesConverter() {
-		return new UserKnowingRulesConverter();
 	}
 	
 	@Bean

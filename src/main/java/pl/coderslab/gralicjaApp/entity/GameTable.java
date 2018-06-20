@@ -1,19 +1,20 @@
 package pl.coderslab.gralicjaApp.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -37,9 +38,6 @@ public class GameTable {
 	@NotNull
 	private int maxNumOfPlayers;
 
-	@NotNull
-	private int currentNumOfPlayers;
-
 	private boolean familiarWithGame;
 
 	@NotEmpty
@@ -50,14 +48,11 @@ public class GameTable {
 
 	private int numberOfTable;
 	
-	
-	@ManyToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
-    private List<User> users = new ArrayList<>();
-	
-	
-	@OneToMany(cascade = CascadeType.MERGE)
-	@JoinColumn(name="id_userKnowingRules")
-	private List<UserKnowingRules> userKnowingRules = new ArrayList<>();
+	//Boolean storage information if user knows game rules
+	@ElementCollection
+	@CollectionTable(joinColumns = @JoinColumn(name = "gameTable_id"))
+	@MapKeyJoinColumn(name = "user_id")
+    private Map<User, Boolean> users = new HashMap<>();
 	
 	@OneToOne(mappedBy = "gameTable",
             cascade = CascadeType.ALL,
@@ -69,19 +64,17 @@ public class GameTable {
 	}
 
 	public GameTable(String tableName, BoardGame boardGame, int maxNumOfPlayers, int currentNumOfPlayers,
-			boolean familiarWithGame, String day, String startingHour, int numberOfTable, List<User> users,
-			List<UserKnowingRules> userKnowingRules, TableReservation tableReservation) {
+			boolean familiarWithGame, String day, String startingHour, int numberOfTable, Map<User, Boolean> users,
+			TableReservation tableReservation) {
 		super();
 		this.tableName = tableName;
 		this.boardGame = boardGame;
 		this.maxNumOfPlayers = maxNumOfPlayers;
-		this.currentNumOfPlayers = currentNumOfPlayers;
 		this.familiarWithGame = familiarWithGame;
 		this.day = day;
 		this.startingHour = startingHour;
 		this.numberOfTable = numberOfTable;
 		this.users = users;
-		this.userKnowingRules = userKnowingRules;
 		this.tableReservation = tableReservation;
 	}
 
@@ -115,14 +108,6 @@ public class GameTable {
 
 	public void setMaxNumOfPlayers(int maxNumOfPlayers) {
 		this.maxNumOfPlayers = maxNumOfPlayers;
-	}
-
-	public int getCurrentNumOfPlayers() {
-		return currentNumOfPlayers;
-	}
-
-	public void setCurrentNumOfPlayers(int currentNumOfPlayers) {
-		this.currentNumOfPlayers = currentNumOfPlayers;
 	}
 
 	public boolean isFamiliarWithGame() {
@@ -165,20 +150,12 @@ public class GameTable {
 		this.numberOfTable = numberOfTable;
 	}
 
-	public List<User> getUsers() {
+	public Map<User, Boolean> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+	public void setUsers(Map<User, Boolean> users) {
 		this.users = users;
-	}
-
-	public List<UserKnowingRules> getUserKnowingRules() {
-		return userKnowingRules;
-	}
-
-	public void setUserKnowingRules(List<UserKnowingRules> userKnowingRules) {
-		this.userKnowingRules = userKnowingRules;
 	}
 
 	public TableReservation getTableReservation() {

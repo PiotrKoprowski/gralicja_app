@@ -18,12 +18,10 @@ import pl.coderslab.gralicjaApp.entity.GameTable;
 import pl.coderslab.gralicjaApp.entity.TableNumber;
 import pl.coderslab.gralicjaApp.entity.TableReservation;
 import pl.coderslab.gralicjaApp.entity.User;
-import pl.coderslab.gralicjaApp.entity.UserKnowingRules;
 import pl.coderslab.gralicjaApp.repository.BoardGameRepository;
 import pl.coderslab.gralicjaApp.repository.GameTableRepository;
 import pl.coderslab.gralicjaApp.repository.TableNumberRepository;
 import pl.coderslab.gralicjaApp.repository.TableReservationRepository;
-import pl.coderslab.gralicjaApp.repository.UserKnowingRulesRepository;
 import pl.coderslab.gralicjaApp.repository.UserRepository;
 
 @Service
@@ -38,9 +36,6 @@ public class GameTableService {
 	
 	@Autowired
 	UserRepository userRepository;
-	
-	@Autowired
-	UserKnowingRulesRepository userKnowingRulesRepository;
 	
 	@Autowired
 	TableReservationRepository tableReservationRepository;
@@ -62,12 +57,8 @@ public class GameTableService {
 	public String addGameTable(GameTable gameTable, Model m, Principal principal, long boardGameId) {
 	String name = principal.getName();	
 	User u = userRepository.findByUsername(name);
-	gameTable.getUsers().add(u);
-	gameTable.setCurrentNumOfPlayers(1);
-	boolean knowingRules = gameTable.isFamiliarWithGame();
-	UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
-	this.userKnowingRulesRepository.save(userKR);
-	gameTable.getUserKnowingRules().add(userKR);
+	boolean userKnowingRules = gameTable.isFamiliarWithGame();
+	gameTable.getUsers().put(u, userKnowingRules);
 	BoardGame boardGame = boardGameRepository.findOne(boardGameId);
 	gameTable.setBoardGame(boardGame);
 	
@@ -149,7 +140,6 @@ public class GameTableService {
 				if(counter == numbersOfTableToReservation + 1) {
 					this.tableReservationRepository.delete(reservation);
 					this.gameTableRepository.delete(gameTable);
-					this.userKnowingRulesRepository.delete(userKR);
 					m.addAttribute("alert", "Przepraszamy nie ma wolnych stolików w tym terminie, wybierz inny termin");
 					return "gameTableForm";
 				} else if(tableNumberRepository.findOne(counter) == null) {
@@ -177,7 +167,6 @@ public class GameTableService {
 					TableNumber tableNumber = tableNumberRepository.findOne(counter);
 					List<Date> beginning = tableNumber.getBeginning();
 					List<Date> ending = tableNumber.getEnding();
-					
 					
 					// have to check all reservation before and after (in particular table) before making new reservation
 					boolean beforeEvent = false; 
@@ -256,12 +245,8 @@ public class GameTableService {
 	public String addToTable(long tableId, String username, String rules) {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
-		gameTable.getUsers().add(u);
-		gameTable.setCurrentNumOfPlayers(gameTable.getUsers().size());
-		boolean knowingRules = Boolean.parseBoolean(rules);
-		UserKnowingRules userKR = new UserKnowingRules(u, knowingRules);
-		this.userKnowingRulesRepository.save(userKR);
-		gameTable.getUserKnowingRules().add(userKR);
+		boolean userKnowingRules = Boolean.parseBoolean(rules);
+		gameTable.getUsers().put(u, userKnowingRules);
 		this.gameTableRepository.save(gameTable);	
 	    return "redirect:/";
 	}
@@ -270,18 +255,6 @@ public class GameTableService {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
 		gameTable.getUsers().remove(u);
-		// finding userKnowingRules id
-		long userKnowingRulesId = 0;
-		List<UserKnowingRules> usersKnowingRulesList = gameTable.getUserKnowingRules();
-		for (UserKnowingRules userKnowingRules : usersKnowingRulesList) {
-			if(userKnowingRules.getUser().getUsername().equals(username)) {
-				userKnowingRulesId = userKnowingRules.getId();
-				usersKnowingRulesList.remove(userKnowingRules);
-				gameTable.setUserKnowingRules(usersKnowingRulesList);
-				this.gameTableRepository.save(gameTable);
-				break;
-			}
-		}	
 		if(gameTable.getUsers().size()==0) {
 			long tableNumberId = gameTable.getTableReservation().getTableNumber().getId(); //finding tableNumberId
 			TableNumber tableNumber = this.tableNumberRepository.findOne(tableNumberId);
@@ -301,10 +274,8 @@ public class GameTableService {
 			this.tableReservationRepository.delete(gameTable.getTableReservation());
 			this.gameTableRepository.delete(gameTable);
 		} else {
-			gameTable.setCurrentNumOfPlayers(gameTable.getUsers().size());
 			this.gameTableRepository.save(gameTable);
 		}
-		this.userKnowingRulesRepository.delete(this.userKnowingRulesRepository.findOne(userKnowingRulesId));
 	    return "redirect:/";
 	}
 }

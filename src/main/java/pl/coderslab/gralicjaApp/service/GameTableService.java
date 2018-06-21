@@ -1,9 +1,8 @@
 package pl.coderslab.gralicjaApp.service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -86,7 +85,7 @@ public class GameTableService {
 	int startingMin = Integer.parseInt(parts[1]);
 	
 	int year = 2000;
-	int month = 0;
+	int month = 1;
 	int day = startingDay;
 	Double endingHourDouble = Math.ceil(gameTable.getBoardGame().getGameLength() * 1.5); //multiply gameLenth and round up to full hour
 	int endingHour = startingHour + endingHourDouble.intValue(); //setting ending hour as a starting hour + rounded gameLenth
@@ -96,14 +95,11 @@ public class GameTableService {
 	TableReservation reservation = new TableReservation();
 	reservation.setGameTable(gameTable);
 	
-	Calendar startingCal = Calendar.getInstance();
-	startingCal.set(year, month, day, startingHour, startingMin, 00);
-	Date startingDate = startingCal.getTime();
+	
+	LocalDateTime startingDate = LocalDateTime.of(year, month, day, startingHour, startingMin);
 	reservation.setBegin(startingDate);
 	
-	Calendar endingCal = Calendar.getInstance();
-	endingCal.set(year, month, day, endingHour, endingMin, 00);
-	Date endingDate = endingCal.getTime();
+	LocalDateTime endingDate = LocalDateTime.of(year, month, day, endingHour, endingMin);
 	reservation.setEnd(endingDate);
 	this.tableReservationRepository.save(reservation);
 	
@@ -114,10 +110,10 @@ public class GameTableService {
 	if(tableNumberRepository.findOne((long) 1) == null) {
 		TableNumber tableNumber = new TableNumber();
 		
-		List<Date> beginning = new ArrayList<>();
+		List<LocalDateTime> beginning = new ArrayList<>();
 		beginning.add(startingDate);
 		tableNumber.setBeginning(beginning);
-		List<Date> ending = new ArrayList<>();
+		List<LocalDateTime> ending = new ArrayList<>();
 		ending.add(endingDate);
 		tableNumber.setEnding(ending);
 
@@ -145,10 +141,10 @@ public class GameTableService {
 				} else if(tableNumberRepository.findOne(counter) == null) {
 					TableNumber tableNumber = new TableNumber();
 					
-					List<Date> beginning = new ArrayList<>();
+					List<LocalDateTime> beginning = new ArrayList<>();
 					beginning.add(startingDate);
 					tableNumber.setBeginning(beginning);
-					List<Date> ending = new ArrayList<>();
+					List<LocalDateTime> ending = new ArrayList<>();
 					ending.add(endingDate);
 					tableNumber.setEnding(ending);
 
@@ -165,8 +161,8 @@ public class GameTableService {
 					
 				} else {
 					TableNumber tableNumber = tableNumberRepository.findOne(counter);
-					List<Date> beginning = tableNumber.getBeginning();
-					List<Date> ending = tableNumber.getEnding();
+					List<LocalDateTime> beginning = tableNumber.getBeginning();
+					List<LocalDateTime> ending = tableNumber.getEnding();
 					
 					// have to check all reservation before and after (in particular table) before making new reservation
 					boolean beforeEvent = false; 
@@ -258,11 +254,11 @@ public class GameTableService {
 		if(gameTable.getUsers().size()==0) {
 			long tableNumberId = gameTable.getTableReservation().getTableNumber().getId(); //finding tableNumberId
 			TableNumber tableNumber = this.tableNumberRepository.findOne(tableNumberId);
-			List<Date> beginning = tableNumber.getBeginning();
+			List<LocalDateTime> beginning = tableNumber.getBeginning();
 			beginning.remove(gameTable.getTableReservation().getBegin()); //removing beginning date from tableNumber
 			tableNumber.setBeginning(beginning);
 			
-			List<Date> ending = tableNumber.getEnding();
+			List<LocalDateTime> ending = tableNumber.getEnding();
 			ending.remove(gameTable.getTableReservation().getEnd()); //removing ending date from tableNumber
 			tableNumber.setEnding(ending);
 			

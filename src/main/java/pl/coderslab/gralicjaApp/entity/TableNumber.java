@@ -1,7 +1,7 @@
 package pl.coderslab.gralicjaApp.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -21,12 +21,12 @@ public class TableNumber {
 	private long id;
 	
 	@Column
-    @ElementCollection(targetClass=Date.class)
-	private List<Date> beginning;
+    @ElementCollection(targetClass=LocalDateTime.class)
+	private List<LocalDateTime> beginning;
 
 	@Column
-    @ElementCollection(targetClass=Date.class)
-	private List<Date> ending;
+    @ElementCollection(targetClass=LocalDateTime.class)
+	private List<LocalDateTime> ending;
 	
 	@OneToMany(mappedBy = "tableNumber", cascade = CascadeType.MERGE)
 	    private List<TableReservation> tableReservation = new ArrayList<>();
@@ -35,7 +35,7 @@ public class TableNumber {
 		super();
 	}
 
-	public TableNumber(List<Date> beginning, List<Date> ending, List<TableReservation> tableReservation) {
+	public TableNumber(List<LocalDateTime> beginning, List<LocalDateTime> ending, List<TableReservation> tableReservation) {
 		super();
 		this.beginning = beginning;
 		this.ending = ending;
@@ -50,19 +50,19 @@ public class TableNumber {
 		this.id = id;
 	}
 
-	public List<Date> getBeginning() {
+	public List<LocalDateTime> getBeginning() {
 		return beginning;
 	}
 
-	public void setBeginning(List<Date> beginning) {
+	public void setBeginning(List<LocalDateTime> beginning) {
 		this.beginning = beginning;
 	}
 
-	public List<Date> getEnding() {
+	public List<LocalDateTime> getEnding() {
 		return ending;
 	}
 
-	public void setEnding(List<Date> ending) {
+	public void setEnding(List<LocalDateTime> ending) {
 		this.ending = ending;
 	}
 

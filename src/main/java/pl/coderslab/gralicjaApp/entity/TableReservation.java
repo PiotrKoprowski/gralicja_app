@@ -1,6 +1,8 @@
 package pl.coderslab.gralicjaApp.entity;
 
-import java.util.Date;
+
+
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,10 +22,10 @@ public class TableReservation {
 	private long id;
 
 	@NotNull
-	private Date begin;
+	private LocalDateTime begin;
 
 	@NotNull
-	private Date end;
+	private LocalDateTime end;
 
 	@ManyToOne
 	private TableNumber tableNumber;
@@ -37,7 +39,7 @@ public class TableReservation {
 		super();
 	}
 
-	public TableReservation(Date begin, Date end, TableNumber tableNumber, GameTable gameTable) {
+	public TableReservation(LocalDateTime begin, LocalDateTime end, TableNumber tableNumber, GameTable gameTable) {
 		super();
 		this.begin = begin;
 		this.end = end;
@@ -53,19 +55,19 @@ public class TableReservation {
 		this.id = id;
 	}
 
-	public Date getBegin() {
+	public LocalDateTime getBegin() {
 		return begin;
 	}
 
-	public void setBegin(Date begin) {
+	public void setBegin(LocalDateTime begin) {
 		this.begin = begin;
 	}
 
-	public Date getEnd() {
+	public LocalDateTime getEnd() {
 		return end;
 	}
 
-	public void setEnd(Date end) {
+	public void setEnd(LocalDateTime end) {
 		this.end = end;
 	}
 

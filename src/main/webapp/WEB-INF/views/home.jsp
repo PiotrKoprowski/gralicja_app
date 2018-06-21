@@ -88,7 +88,14 @@
 			<p>Rezerwacja stolika od godziny: <b>${gameTable.tableReservation.begin}</b></p>
 			<p>Rezerwacja stolika do godziny: <b>${gameTable.tableReservation.end}</b></p>
 			<p>Czy któryś z graczy zna zasady? 
-			
+					<b><c:choose>
+				    <c:when test="${gameTable.familiarWithGame == true}">
+				        Tak
+				    </c:when>    
+				    <c:otherwise>
+				        Nie 
+				    </c:otherwise>
+					</c:choose></b>
 			</p>
 			<div>
 			<div class="w3-container">
@@ -154,7 +161,14 @@
 			<p>Aktualna liczba graczy: <b>${gameTable.users.size()}</b></p>
 			<p>Stolik: <b>${gameTable.numberOfTable}</b></p>
 			<p>Czy któryś z graczy zna zasady? 
-				
+					<b><c:choose>
+				    <c:when test="${gameTable.familiarWithGame == true}">
+				        Tak
+				    </c:when>    
+				    <c:otherwise>
+				        Nie 
+				    </c:otherwise>
+					</c:choose></b>	
 			</p>
 			<div>
 			<div class="w3-container">

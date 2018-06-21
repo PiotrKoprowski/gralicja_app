@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -46,196 +47,196 @@ public class GameTableService {
 	EntityManager entityManager;
 	
 	public String addGameTableGet(Model m, long boardGameId) {
-		GameTable gameTable = new GameTable();
-		BoardGame boardGame = boardGameRepository.findOne(boardGameId);
+		final GameTable gameTable = new GameTable();
+		final BoardGame boardGame = boardGameRepository.findOne(boardGameId);
 		m.addAttribute("gameTable", gameTable);
 		m.addAttribute("boardGame", boardGame);
 		return "gameTableForm";
 	}
 	
 	public String addGameTable(GameTable gameTable, Model m, Principal principal, long boardGameId) {
-	String name = principal.getName();	
-	User u = userRepository.findByUsername(name);
-	boolean userKnowingRules = gameTable.isFamiliarWithGame();
-	gameTable.getUsers().put(u, userKnowingRules);
-	BoardGame boardGame = boardGameRepository.findOne(boardGameId);
-	gameTable.setBoardGame(boardGame);
-	
-	try {
-		this.gameTableRepository.save(gameTable);
-    }
-    catch (RuntimeException e) {
-    	m.addAttribute("alert", "Stolik o takiej nazwie już istenieje podaj inną nazwę");
-    	return "gameTableForm";
-    }
-	//table reservation part
-	
-	//data capture
-	String startingDayString = gameTable.getDay();
-	int startingDay;
-	if(startingDayString.equals("Sobota")) {
-		startingDay = 1;
-	} else {
-		startingDay = 2;
-	}
-	
-	String startingHours = gameTable.getStartingHour();
-	String[] parts = startingHours.split(":");
-	int startingHour = Integer.parseInt(parts[0]);
-	int startingMin = Integer.parseInt(parts[1]);
-	
-	int year = 2000;
-	int month = 1;
-	int day = startingDay;
-	Double endingHourDouble = Math.ceil(gameTable.getBoardGame().getGameLength() * 1.5); //multiply gameLenth and round up to full hour
-	int endingHour = startingHour + endingHourDouble.intValue(); //setting ending hour as a starting hour + rounded gameLenth
-	int endingMin = startingMin; //no need to change min if hour is rounding
-	
-	//creating reservation
-	TableReservation reservation = new TableReservation();
-	reservation.setGameTable(gameTable);
-	
-	
-	LocalDateTime startingDate = LocalDateTime.of(year, month, day, startingHour, startingMin);
-	reservation.setBegin(startingDate);
-	
-	LocalDateTime endingDate = LocalDateTime.of(year, month, day, endingHour, endingMin);
-	reservation.setEnd(endingDate);
-	this.tableReservationRepository.save(reservation);
-	
-	gameTable.setTableReservation(reservation);
-	
-	//finding table
-	//first reservation when there is no table added
-	if(tableNumberRepository.findOne((long) 1) == null) {
-		TableNumber tableNumber = new TableNumber();
+		final String name = principal.getName();	
+		final User u = userRepository.findByUsername(name);
+		final boolean userKnowingRules = gameTable.isFamiliarWithGame();
+		gameTable.getUsers().put(u, userKnowingRules);
+		final BoardGame boardGame = boardGameRepository.findOne(boardGameId);
+		gameTable.setBoardGame(boardGame);
 		
-		List<LocalDateTime> beginning = new ArrayList<>();
-		beginning.add(startingDate);
-		tableNumber.setBeginning(beginning);
-		List<LocalDateTime> ending = new ArrayList<>();
-		ending.add(endingDate);
-		tableNumber.setEnding(ending);
-
-		tableNumber.getTableReservation().add(reservation);
-		this.tableNumberRepository.save(tableNumber);
+		try {
+			this.gameTableRepository.save(gameTable);
+	    }
+	    catch (RuntimeException e) {
+	    	m.addAttribute("alert", "Stolik o takiej nazwie już istenieje podaj inną nazwę");
+	    	return "gameTableForm";
+	    }
+		//table reservation part
 		
-		reservation.setTableNumber(tableNumber);
+		//data capture
+		final String startingDayString = gameTable.getDay();
+		int startingDay;
+		if(startingDayString.equals("Sobota")) {
+			startingDay = 1;
+		} else {
+			startingDay = 2;
+		}
+		
+		final String startingHours = gameTable.getStartingHour();
+		final String[] parts = startingHours.split(":");
+		final int startingHour = Integer.parseInt(parts[0]);
+		final int startingMin = Integer.parseInt(parts[1]);
+		
+		final int year = 2000;
+		final int month = 1;
+		final int day = startingDay;
+		final Double endingHourDouble = Math.ceil(gameTable.getBoardGame().getGameLength() * 1.5); //multiply gameLenth and round up to full hour
+		final int endingHour = startingHour + endingHourDouble.intValue(); //setting ending hour as a starting hour + rounded gameLenth
+		final int endingMin = startingMin; //no need to change min if hour is rounding
+		
+		//creating reservation
+		TableReservation reservation = new TableReservation();
+		reservation.setGameTable(gameTable);
+		
+		
+		LocalDateTime startingDate = LocalDateTime.of(year, month, day, startingHour, startingMin);
+		reservation.setBegin(startingDate);
+		
+		LocalDateTime endingDate = LocalDateTime.of(year, month, day, endingHour, endingMin);
+		reservation.setEnd(endingDate);
 		this.tableReservationRepository.save(reservation);
 		
-		gameTable.setNumberOfTable( (int) tableNumber.getId());
-		this.gameTableRepository.save(gameTable);
+		gameTable.setTableReservation(reservation);
 		
-	} else {
-	//searching empty place to make reservation
-	long numbersOfTableToReservation = 3; //setting max number of tables which could be created
-	boolean breakCondition = true;
+		//finding table
+		//first reservation when there is no table added
+		if(tableNumberRepository.findOne((long) 1) == null) {
+			TableNumber tableNumber = new TableNumber();
+			
+			List<LocalDateTime> beginning = new ArrayList<>();
+			beginning.add(startingDate);
+			tableNumber.setBeginning(beginning);
+			List<LocalDateTime> ending = new ArrayList<>();
+			ending.add(endingDate);
+			tableNumber.setEnding(ending);
 	
-		while(breakCondition) {
-			for(long counter = 1; counter <= numbersOfTableToReservation + 1; counter++) {
-				if(counter == numbersOfTableToReservation + 1) {
-					this.tableReservationRepository.delete(reservation);
-					this.gameTableRepository.delete(gameTable);
-					m.addAttribute("alert", "Przepraszamy nie ma wolnych stolików w tym terminie, wybierz inny termin");
-					return "gameTableForm";
-				} else if(tableNumberRepository.findOne(counter) == null) {
-					TableNumber tableNumber = new TableNumber();
+			tableNumber.getTableReservation().add(reservation);
+			this.tableNumberRepository.save(tableNumber);
+			
+			reservation.setTableNumber(tableNumber);
+			this.tableReservationRepository.save(reservation);
+			
+			gameTable.setNumberOfTable( (int) tableNumber.getId());
+			this.gameTableRepository.save(gameTable);
+			
+		} else {
+		//searching empty place to make reservation
+		final long numbersOfTableToReservation = 3; //setting max number of tables which could be created
+		boolean breakCondition = true;
+		
+			while(breakCondition) {
+				for(long counter = 1; counter <= numbersOfTableToReservation + 1; counter++) {
+					if(counter == numbersOfTableToReservation + 1) {
+						this.tableReservationRepository.delete(reservation);
+						this.gameTableRepository.delete(gameTable);
+						m.addAttribute("alert", "Przepraszamy nie ma wolnych stolików w tym terminie, wybierz inny termin");
+						return "gameTableForm";
+					} else if(tableNumberRepository.findOne(counter) == null) {
+						TableNumber tableNumber = new TableNumber();
+						
+						List<LocalDateTime> beginning = new ArrayList<>();
+						beginning.add(startingDate);
+						tableNumber.setBeginning(beginning);
+						List<LocalDateTime> ending = new ArrayList<>();
+						ending.add(endingDate);
+						tableNumber.setEnding(ending);
+	
+						tableNumber.getTableReservation().add(reservation);
+						this.tableNumberRepository.save(tableNumber);
+						
+						reservation.setTableNumber(tableNumber);
+						this.tableReservationRepository.save(reservation);
+						
+						gameTable.setNumberOfTable( (int) tableNumber.getId());
+						this.gameTableRepository.save(gameTable);
+						breakCondition = false; //stop while loop
+						break;
+						
+					} else {
+						TableNumber tableNumber = tableNumberRepository.findOne(counter);
+						List<LocalDateTime> beginning = tableNumber.getBeginning();
+						List<LocalDateTime> ending = tableNumber.getEnding();
+						
+						// have to check all reservation before and after (in particular table) before making new reservation
+						boolean beforeEvent = false; 
+						boolean afterEvent = false;
 					
-					List<LocalDateTime> beginning = new ArrayList<>();
-					beginning.add(startingDate);
-					tableNumber.setBeginning(beginning);
-					List<LocalDateTime> ending = new ArrayList<>();
-					ending.add(endingDate);
-					tableNumber.setEnding(ending);
-
-					tableNumber.getTableReservation().add(reservation);
-					this.tableNumberRepository.save(tableNumber);
-					
-					reservation.setTableNumber(tableNumber);
-					this.tableReservationRepository.save(reservation);
-					
-					gameTable.setNumberOfTable( (int) tableNumber.getId());
-					this.gameTableRepository.save(gameTable);
-					breakCondition = false; //stop while loop
-					break;
-					
-				} else {
-					TableNumber tableNumber = tableNumberRepository.findOne(counter);
-					List<LocalDateTime> beginning = tableNumber.getBeginning();
-					List<LocalDateTime> ending = tableNumber.getEnding();
-					
-					// have to check all reservation before and after (in particular table) before making new reservation
-					boolean beforeEvent = false; 
-					boolean afterEvent = false;
-				
-					for(int i = 0; i < beginning.size(); i++) {
-						if((beginning.get(i).compareTo(endingDate)>=0) && (beginning.get(i).compareTo(startingDate)>=0)) {
-							beforeEvent = true;
-							afterEvent = false;
-						}else if((ending.get(i).compareTo(startingDate)<=0) && (ending.get(i).compareTo(endingDate)<=0)) {
-							beforeEvent = false;
-							afterEvent = true;
-						}else {
-							beforeEvent = false;
-							afterEvent = false;
+						for(int i = 0; i < beginning.size(); i++) {
+							if((beginning.get(i).compareTo(endingDate)>=0) && (beginning.get(i).compareTo(startingDate)>=0)) {
+								beforeEvent = true;
+								afterEvent = false;
+							}else if((ending.get(i).compareTo(startingDate)<=0) && (ending.get(i).compareTo(endingDate)<=0)) {
+								beforeEvent = false;
+								afterEvent = true;
+							}else {
+								beforeEvent = false;
+								afterEvent = false;
+							}
 						}
-					}
-					
-//					if beforeEvent = true the loop will stop increase tableNumber
-					if(beforeEvent) {
-						beginning.add(startingDate);
-						tableNumber.setBeginning(beginning);
-						ending.add(endingDate);
-						tableNumber.setEnding(ending);
-
-						tableNumber.getTableReservation().add(reservation);
-						this.tableNumberRepository.save(tableNumber);
 						
-						reservation.setTableNumber(tableNumber);
-						this.tableReservationRepository.save(reservation);
-						
-						gameTable.setNumberOfTable( (int) tableNumber.getId());
-						this.gameTableRepository.save(gameTable);
-						breakCondition = false; //stop while loop
-						break;
-					}else if(afterEvent) {
-						beginning.add(startingDate);
-						tableNumber.setBeginning(beginning);
-						ending.add(endingDate);
-						tableNumber.setEnding(ending);
-
-						tableNumber.getTableReservation().add(reservation);
-						this.tableNumberRepository.save(tableNumber);
-						
-						reservation.setTableNumber(tableNumber);
-						this.tableReservationRepository.save(reservation);
-						
-						gameTable.setNumberOfTable( (int) tableNumber.getId());
-						this.gameTableRepository.save(gameTable);
-						breakCondition = false; //stop while loop
-						break;
-					}else if(beginning.size() == 0) { //case when tableNumber was created but reservation was removed and it is created but empty
-						beginning.add(startingDate);
-						tableNumber.setBeginning(beginning);
-						ending.add(endingDate);
-						tableNumber.setEnding(ending);
-
-						tableNumber.getTableReservation().add(reservation);
-						this.tableNumberRepository.save(tableNumber);
-						
-						reservation.setTableNumber(tableNumber);
-						this.tableReservationRepository.save(reservation);
-						
-						gameTable.setNumberOfTable( (int) tableNumber.getId());
-						this.gameTableRepository.save(gameTable);
-						breakCondition = false; //stop while loop
-						break;
+	//					if beforeEvent = true the loop will stop increase tableNumber
+						if(beforeEvent) {
+							beginning.add(startingDate);
+							tableNumber.setBeginning(beginning);
+							ending.add(endingDate);
+							tableNumber.setEnding(ending);
+	
+							tableNumber.getTableReservation().add(reservation);
+							this.tableNumberRepository.save(tableNumber);
+							
+							reservation.setTableNumber(tableNumber);
+							this.tableReservationRepository.save(reservation);
+							
+							gameTable.setNumberOfTable( (int) tableNumber.getId());
+							this.gameTableRepository.save(gameTable);
+							breakCondition = false; //stop while loop
+							break;
+						}else if(afterEvent) {
+							beginning.add(startingDate);
+							tableNumber.setBeginning(beginning);
+							ending.add(endingDate);
+							tableNumber.setEnding(ending);
+	
+							tableNumber.getTableReservation().add(reservation);
+							this.tableNumberRepository.save(tableNumber);
+							
+							reservation.setTableNumber(tableNumber);
+							this.tableReservationRepository.save(reservation);
+							
+							gameTable.setNumberOfTable( (int) tableNumber.getId());
+							this.gameTableRepository.save(gameTable);
+							breakCondition = false; //stop while loop
+							break;
+						}else if(beginning.size() == 0) { //case when tableNumber was created but reservation was removed and it is created but empty
+							beginning.add(startingDate);
+							tableNumber.setBeginning(beginning);
+							ending.add(endingDate);
+							tableNumber.setEnding(ending);
+	
+							tableNumber.getTableReservation().add(reservation);
+							this.tableNumberRepository.save(tableNumber);
+							
+							reservation.setTableNumber(tableNumber);
+							this.tableReservationRepository.save(reservation);
+							
+							gameTable.setNumberOfTable( (int) tableNumber.getId());
+							this.gameTableRepository.save(gameTable);
+							breakCondition = false; //stop while loop
+							break;
+						}
 					}
 				}
 			}
 		}
-	}
-	return "redirect:/";
+		return "redirect:/";
 	}
 	
 	public String addToTable(long tableId, String username, String rules) {
@@ -243,15 +244,25 @@ public class GameTableService {
 		User u = userRepository.findByUsername(username);
 		boolean userKnowingRules = Boolean.parseBoolean(rules);
 		gameTable.getUsers().put(u, userKnowingRules);
-		this.gameTableRepository.save(gameTable);	
-	    return "redirect:/";
+		//setting familiar with game rules
+	    if(!gameTable.isFamiliarWithGame() && userKnowingRules) {
+	    	gameTable.setFamiliarWithGame(true);
+	    }
+	    this.gameTableRepository.save(gameTable);	
+		return "redirect:/";
 	}
 	
 	public String deleteFromTable(long tableId, String username) {
 		GameTable gameTable = gameTableRepository.findOne(tableId);
 		User u = userRepository.findByUsername(username);
-		gameTable.getUsers().remove(u);
-		if(gameTable.getUsers().size()==0) {
+		Map<User, Boolean> users = gameTable.getUsers();
+		users.remove(u);
+		//checking if in table is added player who knows the rules
+		if(gameTable.isFamiliarWithGame() && !users.containsValue(true)) {
+			gameTable.setFamiliarWithGame(false);
+		}
+		
+		if(users.size()==0) {
 			long tableNumberId = gameTable.getTableReservation().getTableNumber().getId(); //finding tableNumberId
 			TableNumber tableNumber = this.tableNumberRepository.findOne(tableNumberId);
 			List<LocalDateTime> beginning = tableNumber.getBeginning();
@@ -265,6 +276,8 @@ public class GameTableService {
 			List<TableReservation> tableReservation = tableNumber.getTableReservation();
 			tableReservation.remove(gameTable.getTableReservation()); //removing reservation from tableNumber
 			tableNumber.setTableReservation(tableReservation);
+			
+
 			
 			this.tableNumberRepository.save(tableNumber);
 			this.tableReservationRepository.delete(gameTable.getTableReservation());

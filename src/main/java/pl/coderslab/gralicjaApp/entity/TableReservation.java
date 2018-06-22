@@ -87,4 +87,58 @@ public class TableReservation {
 		this.gameTable = gameTable;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((begin == null) ? 0 : begin.hashCode());
+		result = prime * result + ((end == null) ? 0 : end.hashCode());
+		result = prime * result + ((gameTable == null) ? 0 : gameTable.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((tableNumber == null) ? 0 : tableNumber.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TableReservation other = (TableReservation) obj;
+		if (begin == null) {
+			if (other.begin != null)
+				return false;
+		} else if (!begin.equals(other.begin))
+			return false;
+		if (end == null) {
+			if (other.end != null)
+				return false;
+		} else if (!end.equals(other.end))
+			return false;
+		if (gameTable == null) {
+			if (other.gameTable != null)
+				return false;
+		} else if (!gameTable.equals(other.gameTable))
+			return false;
+		if (id != other.id)
+			return false;
+		if (tableNumber == null) {
+			if (other.tableNumber != null)
+				return false;
+		} else if (!tableNumber.equals(other.tableNumber))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("TableReservation [id=").append(id).append(", begin=").append(begin).append(", end=").append(end).append(", tableNumber=").append(tableNumber)
+               .append(", gameTable=").append(gameTable).append("]");
+        return builder.toString();
+	}
+	
 }

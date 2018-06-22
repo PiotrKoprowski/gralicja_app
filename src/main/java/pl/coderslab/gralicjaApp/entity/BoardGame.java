@@ -142,5 +142,77 @@ public class BoardGame {
 	public void setMaxPlayerAge(int maxPlayerAge) {
 		this.maxPlayerAge = maxPlayerAge;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(gameLength);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + maxNumOfPlayers;
+		result = prime * result + maxPlayerAge;
+		result = prime * result + minNumOfPlayers;
+		result = prime * result + minPlayerAge;
+		result = prime * result + ((publisher == null) ? 0 : publisher.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BoardGame other = (BoardGame) obj;
+		if (category == null) {
+			if (other.category != null)
+				return false;
+		} else if (!category.equals(other.category))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (Double.doubleToLongBits(gameLength) != Double.doubleToLongBits(other.gameLength))
+			return false;
+		if (id != other.id)
+			return false;
+		if (maxNumOfPlayers != other.maxNumOfPlayers)
+			return false;
+		if (maxPlayerAge != other.maxPlayerAge)
+			return false;
+		if (minNumOfPlayers != other.minNumOfPlayers)
+			return false;
+		if (minPlayerAge != other.minPlayerAge)
+			return false;
+		if (publisher == null) {
+			if (other.publisher != null)
+				return false;
+		} else if (!publisher.equals(other.publisher))
+			return false;
+		if (title == null) {
+			if (other.title != null)
+				return false;
+		} else if (!title.equals(other.title))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("BoardGame [id=").append(id).append(", title=").append(title).append(", description=").append(description).append(", category=").append(category)
+               .append(", publisher=").append(publisher).append(", minNumOfPlayers=").append(minNumOfPlayers).append(", maxNumOfPlayers=").append(maxNumOfPlayers)
+               .append(", minPlayerAge=").append(minPlayerAge).append(", maxPlayerAge=").append(maxPlayerAge).append(", gameLength=").append(gameLength).append("]");
+        return builder.toString();
+	}
 	
 }

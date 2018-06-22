@@ -254,7 +254,6 @@
 			</div>
 			</c:if>	
 	</c:forEach>	
-	
 </div>
 <hr>
 <%@ include file="jspf/footer.jspf"%>

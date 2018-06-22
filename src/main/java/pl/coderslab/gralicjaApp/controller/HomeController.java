@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import pl.coderslab.gralicjaApp.entity.GameTable;
+import pl.coderslab.gralicjaApp.repository.BoardGameRepository;
 import pl.coderslab.gralicjaApp.repository.GameTableRepository;
 import pl.coderslab.gralicjaApp.repository.UserRepository;
 
@@ -20,6 +21,9 @@ public class HomeController {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	BoardGameRepository boardGameReposiotory;
 	
 	@GetMapping("")
 	public String home(Model m, Principal principal) {		

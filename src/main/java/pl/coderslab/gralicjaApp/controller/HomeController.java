@@ -32,6 +32,11 @@ public class HomeController {
 		return "home";
 	}
 	
+	@GetMapping("rest/")
+	public String homeRest() {		
+		return "homeRest";
+	}
+	
 	@GetMapping("resources/css/style.css")
 	public String mistake(Model m) {
 		return "redirect:/";

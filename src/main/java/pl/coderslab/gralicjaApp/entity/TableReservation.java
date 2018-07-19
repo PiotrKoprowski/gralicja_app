@@ -135,10 +135,30 @@ public class TableReservation {
 
 	@Override
 	public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("TableReservation [id=").append(id).append(", begin=").append(begin).append(", end=").append(end).append(", tableNumber=").append(tableNumber)
-               .append(", gameTable=").append(gameTable).append("]");
-        return builder.toString();
+	        final StringBuilder builder = new StringBuilder();
+	        builder.append("TableReservation [id=").append(id)
+	        .append(", begin=").append(begin)
+	        .append(", end=").append(end)
+	        .append(", tableNumber=").append(tableNumber)
+	        .append(", gameTable=").append(gameTable).append("]");
+	        return builder.toString();
 	}
+
+//	@Override
+//	public String toString() {
+//        final StringBuilder builder = new StringBuilder();
+//        builder.append("TableReservation [id=").append(id)
+//        .append(", begin.day=").append(begin.getDayOfMonth())
+//        .append(", begin.hour=").append(begin.getHour())
+//        .append(", begin.minute=").append(begin.getMinute())
+//        .append(", end.day=").append(end.getDayOfMonth())
+//        .append(", end.hour=").append(end.getHour())
+//        .append(", end.minute=").append(end.getMinute())
+//        .append(", tableNumber=").append(tableNumber)
+//        .append(", gameTable=").append(gameTable).append("]");
+//        return builder.toString();
+//	}
+	
+	
 	
 }
